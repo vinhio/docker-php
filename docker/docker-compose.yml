@@ -41,7 +41,7 @@ services:
       - php5
 
   db:
-    image: mysql:5.7.31
+    image: mysql:5.7.35
     #image: mysql:8.0.25
     hostname: php5-db
     container_name: php5-db
