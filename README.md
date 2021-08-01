@@ -1,6 +1,5 @@
 Docker PHP5
 
-Adaptation:
 - Docker/Docker composer
 - OS Alpine 3.8
 - Web Nginx 1.2
