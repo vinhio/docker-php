@@ -1,0 +1,38 @@
+FROM php5-base
+
+VOLUME /home/www/app
+EXPOSE 80 443
+
+# Replace default nginx user and group with IDs, matching current host user (developer)
+ARG hostUID=1000
+ARG hostGID=1000
+ENV hostUID=$hostUID
+ENV hostGID=$hostGID
+RUN echo "uid:gid=$hostUID:$hostGID" &&\
+    oldUID=`id -u nginx` &&\
+    deluser nginx &&\
+    addgroup -g $hostGID nginx &&\
+    adduser -S -u $hostUID -G nginx -h /home/www -s /sbin/nologin nginx &&\
+    find /var -user $oldUID -exec chown -v $hostUID:$hostGID {} \;
+
+## Add some productivity tools for developer
+RUN apk add --update make mc tmux util-linux
+
+### Add NPM folder (Use when run `npm install`)
+ENV NPM_HOME_ROOT=/root/.npm
+ENV NPM_HOME=/home/www/.npm
+ENV CONFIG_HOME=/home/www/.config
+ENV COMPOSER_HOME=/home/www/.composer
+# The folder need when run script `.install-static.sh` via root account (One time)
+RUN mkdir $NPM_HOME_ROOT
+# The folder need when run `npm install` or some else via nginx account
+RUN mkdir $NPM_HOME
+RUN mkdir $CONFIG_HOME
+RUN mkdir $COMPOSER_HOME
+RUN chown -v $hostUID:$hostGID $NPM_HOME_ROOT
+RUN chown -v $hostUID:$hostGID $NPM_HOME
+RUN chown -R $hostUID:$hostGID $CONFIG_HOME
+RUN chown -R $hostUID:$hostGID $COMPOSER_HOME
+
+### Copy configuration files
+ADD local /

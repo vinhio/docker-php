@@ -1,0 +1,4 @@
+#!/usr/bin/execlineb -P
+# Learn more detail about `execlineb` at https://danyspin97.org/blog/getting-started-with-execline-scripting/
+
+/usr/sbin/nginx

@@ -1,0 +1,122 @@
+FROM alpine:3.8
+
+ENV PHP_INI_DIR /etc/php5
+EXPOSE 80
+ENTRYPOINT ["/init"]
+WORKDIR /home/www/app
+ARG PHP_ENV
+
+# Runtime distribution filename.
+ARG BUILD_DATE
+ARG VCS_REF
+ARG BUILD_VERSION
+
+# Labels.
+LABEL com.jiveio.schema-version="1.0"
+LABEL com.jiveio..build-date=$BUILD_DATE
+LABEL com.jiveio.name="vinhxike/hello-docker"
+LABEL com.jiveio.description="Hello Docker"
+LABEL com.jiveio.url="http://www.jiveio.com"
+LABEL com.jiveio.vcs-url="https://github.com/jiveio/hello"
+LABEL com.jiveio.vcs-ref=$VCS_REF
+LABEL com.jiveio.vendor="JiveIO"
+LABEL com.jiveio.version=$BUILD_VERSION
+LABEL com.jiveio.docker.cmd="docker run -p 9090:9090 -d vinhxike/hello-docker"
+
+# Install packages
+RUN apk add --update --no-cache bash \
+	ca-certificates \
+	openssh-client \
+	libmemcached-libs \
+	libevent \
+	libssl1.0 \
+	yaml \
+	curl \
+	curl-dev \
+	nginx
+
+# Install PHP and related packages
+RUN apk add --update --no-cache \
+	php5 \
+	php5-intl \
+	php5-openssl \
+	php5-dba \
+	php5-sqlite3 \
+	php5-pear \
+	php5-phpdbg \
+	php5-gmp \
+	php5-pdo_mysql \
+	php5-pcntl \
+	php5-common \
+	php5-xsl \
+	php5-fpm \	
+	php5-mysql \
+	php5-mysqli \
+	php5-enchant \
+	php5-pspell \
+	php5-snmp \
+	php5-doc \
+	php5-dev \
+	php5-xmlrpc \
+	php5-embed \
+	php5-xmlreader \
+	php5-pdo_sqlite \
+	php5-exif \
+	php5-opcache \
+	php5-ldap \
+	php5-posix \	
+	php5-gd  \
+	php5-gettext \
+	php5-json \
+	php5-xml \
+	php5-iconv \
+	php5-sysvshm \
+	php5-curl \
+	php5-shmop \
+	php5-odbc \
+	php5-phar \
+	php5-pdo_pgsql \
+	php5-imap \
+	php5-pdo_dblib \
+	php5-pgsql \
+	php5-pdo_odbc \
+	#php5-xdebug \
+	php5-zip \
+	php5-apache2 \
+	php5-cgi \
+	php5-ctype \
+	php5-mcrypt \
+	php5-wddx \
+	php5-bcmath \
+	php5-calendar \
+	php5-dom \
+	php5-sockets \
+	php5-soap \
+	php5-apcu \
+	php5-sysvmsg \
+	php5-zlib \
+	php5-ftp \
+	php5-sysvsem \ 
+	php5-pdo \
+	php5-bz2 \
+	apache2 \
+	libxml2-dev
+
+# Remove redundant file
+RUN rm -f /etc/php5/php-fpm.d/www.conf \
+    && rm -f /etc/nginx/conf.d/default.conf \
+    && rm -rf /var/cache/apk/*
+
+# Create system link for php5 to php (Alias)
+RUN ln /usr/bin/php5 /usr/bin/php
+
+# Install S6 overlay
+RUN curl -LSs -o /tmp/s6-overlay-amd64.tar.gz \
+    https://github.com/just-containers/s6-overlay/releases/download/v2.2.0.3/s6-overlay-amd64.tar.gz && \
+    tar xzf /tmp/s6-overlay-amd64.tar.gz -C / && \
+    rm -f /tmp/s6-overlay-amd64.tar.gz
+
+#RUN apk add --update --no-cache imagemagick-dev ffmpeg
+
+### Copy configuration files
+ADD rootfs /

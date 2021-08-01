@@ -1,0 +1,20 @@
+#!/usr/bin/with-contenv bash
+
+# Shutdown temporary nginx
+MAX_WAIT=30
+STEP=0.5
+NGINX_PID=$(cat /var/run/nginx.pid)
+pkill nginx
+
+i=0
+while kill -0 ${NGINX_PID} &> /dev/null; do
+    if [ ${i} -gt ${MAX_WAIT} ]; then
+        echo "Error: Waited more than ${MAX_WAIT} seconds for process with pid ${NGINX_PID} to die. Giving up." >&2
+        exit 3
+    fi
+
+    i=`echo ${i} ${STEP} | awk '{print $1 + $2}'`
+    sleep ${STEP}
+done
+
+exit 0

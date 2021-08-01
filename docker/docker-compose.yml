@@ -1,0 +1,83 @@
+version: '2.1'
+services:
+
+  # docker build -f Dockerfile.base -t php5-base .
+  base:
+    build:
+      context: ""
+      dockerfile: Dockerfile.base
+    image: php5-base
+
+  web:
+    build:
+      context: ""
+      dockerfile: Dockerfile.local
+      args:
+        hostUID: 1000
+        hostGID: 1000
+    image: php5-web
+    hostname: php5-web
+    container_name: php5-web
+    labels:
+      SERVICE_NAME: php5-web
+      SERVICE_80_NAME: php5-web
+      SERVICE_443_NAME: php5-web
+    ports:
+     - '${FORWARD_WEB_PORT:-8080}:80'
+     - '${FORWARD_WEB_PORT:-8443}:443'
+    depends_on:
+      db:
+        condition: service_healthy
+      mail:
+        condition: service_started
+    environment:
+      APP_ENV: local
+      PHP_IDE_CONFIG: serverName=php5-web.service.docker
+    volumes:
+    - ../:/home/www/app
+    networks:
+      - php5
+
+  db:
+    image: mysql:5.7
+    #image: mysql:8.0.25
+    hostname: php5-db
+    container_name: php5-db
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: php5
+      MYSQL_USER: user
+      MYSQL_PASSWORD: secret
+    labels:
+      SERVICE_NAME: php5-db
+      SERVICE_3306_NAME: php5-db
+      SERVICE_33060_NAME: php5-db
+    ports:
+      - '${FORWARD_DB_PORT:-3306}:3306'
+    healthcheck:
+      test: "/usr/bin/mysql --user=user --password=secret --execute \"SHOW DATABASES;\""
+      interval: 3s
+      timeout: 3s
+      retries: 10
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
+    #command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci --default-authentication-plugin=mysql_native_password
+    networks:
+      - php5
+
+  # docker network create php5
+  # docker run --name php5-mail --rm -h php5-mail -l SERVICE_NAME=php5-mail --network php5 mailhog/mailhog
+  mail:
+    image: mailhog/mailhog
+    hostname: php5-mail
+    container_name: php5-mail
+    labels:
+        SERVICE_NAME: php5-mail
+    ports:
+      - '${FORWARD_MAIL_PORT:-1025}:1025' # SMTP server
+      - '${FORWARD_MAIL_PORT:-8025}:8025' # Web UI
+    networks:
+      - php5
+
+networks:
+  php5:
+    driver: bridge

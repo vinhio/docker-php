@@ -1,0 +1,29 @@
+#!/usr/bin/with-contenv bash
+
+echo "Make sure, that log file exists"
+#touch storage/logs/laravel.log
+
+echo "Application folder belongs to nginx:nginx"
+# both developer and application mist be able to modify it
+#chown -Rc nginx:nginx .
+ls | grep -v node_modules | grep -v vendor | xargs -n1 chown -R nginx:nginx
+find . -type d -exec chmod 775 {} \;
+find . -type f -exec chmod ug+rw {} \;
+
+# If DB is shared as volume, it must be owned by root in DB container
+if [[ -d .data ]]; then
+  echo ".data dir is owned by MySQL"
+  chown -R 999:999 .data
+fi
+
+echo "Revoke executable bit from non-executable files"
+# which must be writable by developer and app in container
+find {admin,bootstrap,contract,css,forms,help,images,js,letters,pqp,reports,resource,scripts,site_admin,timeline} -type f -exec chmod 664 {} \;
+
+echo "Set executable bit for executable files"
+#chmod 775 /home/www/app/.idea/base/composer.phar
+find -type f -name "*.sh" -exec chmod 775 {} \;
+
+echo "Nginx should be able to write uploaded files to temporary directory"
+chown root:nginx /tmp
+chmod 775 /tmp

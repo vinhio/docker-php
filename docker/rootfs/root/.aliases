@@ -1,0 +1,2 @@
+alias ll='ls -la'
+alias composer='php5 -d xdebug.remote_enable=0 /usr/bin/composer'
