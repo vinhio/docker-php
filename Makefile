@@ -20,10 +20,10 @@ logs:
 	docker-compose -f docker/docker-compose.yml -p php5 logs -f web
 
 shell:
-	docker-compose -f docker/docker-compose.yml -p ygm exec --user nginx web bash
+	docker-compose -f docker/docker-compose.yml -p php5 exec --user nginx web bash
 
 root:
-	docker-compose -f docker/docker-compose.yml -p ygm exec web bash
+	docker-compose -f docker/docker-compose.yml -p php5 exec web bash
 
 ip:
 	docker inspect php5-web | grep \"IPAddress\"

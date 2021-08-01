@@ -13,15 +13,15 @@ ARG BUILD_VERSION
 
 # Labels.
 LABEL com.jiveio.schema-version="1.0"
-LABEL com.jiveio..build-date=$BUILD_DATE
-LABEL com.jiveio.name="vinhxike/hello-docker"
-LABEL com.jiveio.description="Hello Docker"
+LABEL com.jiveio.build-date=$BUILD_DATE
+LABEL com.jiveio.name="vinhxike/docker-php:php5"
+LABEL com.jiveio.description="Docker PHP 5"
 LABEL com.jiveio.url="http://www.jiveio.com"
-LABEL com.jiveio.vcs-url="https://github.com/jiveio/hello"
+LABEL com.jiveio.vcs-url="https://github.com/vinhxike/docker-php"
 LABEL com.jiveio.vcs-ref=$VCS_REF
 LABEL com.jiveio.vendor="JiveIO"
 LABEL com.jiveio.version=$BUILD_VERSION
-LABEL com.jiveio.docker.cmd="docker run -p 9090:9090 -d vinhxike/hello-docker"
+LABEL com.jiveio.docker.cmd="docker run -p 8080:80 php5-base"
 
 # Install packages
 RUN apk add --update --no-cache bash \
@@ -30,10 +30,22 @@ RUN apk add --update --no-cache bash \
 	libmemcached-libs \
 	libevent \
 	libssl1.0 \
+	#imagemagick-dev \
+    #ffmpeg \
 	yaml \
 	curl \
 	curl-dev \
 	nginx
+
+# Install building packages (build Redis,....)
+#RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.8/community/ --allow-untrusted
+#RUN apk add --update --no-cache \
+#    autoconf \
+#    file \
+#    g++ gcc \
+#    libc-dev \
+#    make pkgconf re2c \
+#    libevent-dev
 
 # Install PHP and related packages
 RUN apk add --update --no-cache \
@@ -65,7 +77,7 @@ RUN apk add --update --no-cache \
 	php5-opcache \
 	php5-ldap \
 	php5-posix \	
-	php5-gd  \
+	php5-gd \
 	php5-gettext \
 	php5-json \
 	php5-xml \
@@ -99,7 +111,7 @@ RUN apk add --update --no-cache \
 	php5-sysvsem \ 
 	php5-pdo \
 	php5-bz2 \
-	apache2 \
+	#php5-redis \
 	libxml2-dev
 
 # Remove redundant file
@@ -108,7 +120,18 @@ RUN rm -f /etc/php5/php-fpm.d/www.conf \
     && rm -rf /var/cache/apk/*
 
 # Create system link for php5 to php (Alias)
-RUN ln /usr/bin/php5 /usr/bin/php
+RUN ln -s /usr/bin/php5 /usr/bin/php
+RUN ln -s /usr/bin/phpize5 /usr/bin/phpize
+RUN ln -s /usr/bin/php-config5 /usr/bin/php-config
+
+# Install Redis (Use solution built and copy from local)
+#RUN curl -LSs -o /tmp/phpredis-4.3.0.tar.gz \
+#    https://github.com/phpredis/phpredis/archive/4.3.0.tar.gz && \
+#    cd /tmp && tar xzf phpredis-4.3.0.tar.gz && cd phpredis-4.3.0 && \
+#    phpize && ./configure && make && make install && \
+#    #cp /tmp/phpredis-4.3.0/modules/redis.so /usr/lib/php5/modules/ && \
+#    cd ~ && rm -fr /tmp/phpredis-4.3.0 && rm -f /tmp/phpredis-4.3.0.tar.gz
+RUN echo "extension=redis.so" > /etc/php5/conf.d/redis.ini
 
 # Install S6 overlay
 RUN curl -LSs -o /tmp/s6-overlay-amd64.tar.gz \
@@ -116,7 +139,11 @@ RUN curl -LSs -o /tmp/s6-overlay-amd64.tar.gz \
     tar xzf /tmp/s6-overlay-amd64.tar.gz -C / && \
     rm -f /tmp/s6-overlay-amd64.tar.gz
 
-#RUN apk add --update --no-cache imagemagick-dev ffmpeg
+# Remove building packages
+#RUN apk del autoconf file g++ gcc  libc-dev make pkgconf re2c libevent-dev
 
 ### Copy configuration files
 ADD rootfs /
+
+### Change permission folders
+RUN chown -R nginx:nginx /home/www/app

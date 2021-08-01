@@ -9,6 +9,8 @@ all: build run
 build:
 	# Step 1: Build image
 	docker build -f docker/Dockerfile.base -t php5-base docker
+	# Check Web http://localhost:8080 after run below command
+	#docker run -p 8080:80 php5-base
 	docker build -f docker/Dockerfile.local --build-arg hostUID=1000 --build-arg hostGID=1000 -t php5-web docker/
 	# Step 2. Create network
 	docker network create php5
