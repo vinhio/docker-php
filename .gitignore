@@ -1,0 +1,8 @@
+# IDEs
+.idea
+
+# Packaged Dependencies
+/vendor/
+
+# Local files
+.env
