@@ -1,4 +1,4 @@
-FROM php5-base
+FROM vinhxike/php5:latest
 
 VOLUME /home/www/app
 EXPOSE 80 443
@@ -16,7 +16,8 @@ RUN echo "uid:gid=$hostUID:$hostGID" &&\
     find /var -user $oldUID -exec chown -v $hostUID:$hostGID {} \;
 
 ## Add some productivity tools for developer
-RUN apk add --update make mc tmux util-linux
+RUN apk add --update --no-cache \
+    make mc tmux util-linux
 
 ### Add NPM folder (Use when run `npm install`)
 ENV NPM_HOME_ROOT=/root/.npm

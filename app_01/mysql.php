@@ -1,8 +1,8 @@
 <?php
-$servername = "php5base-db";
+$servername = "db";
 $username = "user";
 $password = "secret";
-$dbname = "php5base";
+$dbname = "myapp";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);

@@ -1,0 +1,65 @@
+version: '2.1'
+services:
+
+  web:
+    image: vinhxike/php5
+    hostname: myapp-web
+    container_name: myapp-web
+    labels:
+      SERVICE_NAME: myapp-web
+      SERVICE_80_NAME: myapp-web
+      SERVICE_443_NAME: myapp-web
+    ports:
+     - '8080:80'
+    depends_on:
+      db:
+        condition: service_healthy
+      mail:
+        condition: service_started
+      redis:
+        condition: service_started
+    environment:
+      APP_ENV: local
+      PHP_IDE_CONFIG: serverName=myapp-web.service.docker
+    volumes:
+    - ../:/home/www/app
+
+  db:
+    image: mysql:5.7.35
+    #image: mysql:8.0.25
+    hostname: myapp-db
+    container_name: myapp-db
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: myapp
+      MYSQL_USER: user
+      MYSQL_PASSWORD: secret
+    labels:
+      SERVICE_NAME: myapp-db
+      SERVICE_3306_NAME: myapp-db
+      SERVICE_33060_NAME: myapp-db
+    ports:
+      - '33060:3306'
+    healthcheck:
+      test: "/usr/bin/mysql --user=user --password=secret --execute \"SHOW DATABASES;\""
+      interval: 3s
+      timeout: 3s
+      retries: 10
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
+    #command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci --default-authentication-plugin=mysql_native_password
+
+  mail:
+    image: mailhog/mailhog
+    hostname: myapp-mail
+    container_name: myapp-mail
+    labels:
+        SERVICE_NAME: myapp-mail
+    ports:
+      - '8025:8025'
+
+  redis:
+    image: redis:4.0.14-alpine3.11
+    hostname: myapp-redis
+    container_name: myapp-redis
+    labels:
+      SERVICE_NAME: myapp-redis

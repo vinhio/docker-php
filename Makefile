@@ -1,29 +1,18 @@
-all: build run
-
 build:
 	docker-compose -f docker/docker-compose.yml build base
-	#docker-compose -f docker/docker-compose.yml build --no-cache --build-arg hostUID=`id -u` --build-arg hostGID=`id -g` web
-	docker-compose -f docker/docker-compose.yml build --no-cache --build-arg hostUID=1000 --build-arg hostGID=1000 web
 
-start: run
+build_dev:
+	docker-compose -f docker/docker-compose.yml build --no-cache base
 
 run:
-	docker-compose -f docker/docker-compose.yml -p php5 up -d web
+	docker run -p 8080:80 php5-base
 
-stop:
-	docker-compose -f docker/docker-compose.yml -p php5 kill
+version:
+	#make version VERSION="1.1"
+	#make version VERSION="latest"
+	docker tag php5-base:latest vinhxike/php5:$(VERSION)
 
-destroy:
-	docker-compose -f docker/docker-compose.yml -p php5 down
-
-logs:
-	docker-compose -f docker/docker-compose.yml -p php5 logs -f web
-
-shell:
-	docker-compose -f docker/docker-compose.yml -p php5 exec --user nginx web bash
-
-root:
-	docker-compose -f docker/docker-compose.yml -p php5 exec web bash
-
-ip:
-	docker inspect php5-web | grep \"IPAddress\"
+push:
+	#make push VERSION="1.1"
+	#make push VERSION="latest"
+	docker push vinhxike/php5:$(VERSION)

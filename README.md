@@ -8,6 +8,71 @@ PHP5 Base provides a simple and completed PHP 5 environment for the Legacy PHP c
 - MySQL 5.7.35 / MySQL 8
 - Redis 4.3.0
 
+#### PHP plugins:
+
+    php5
+	php5-intl
+	php5-openssl
+	php5-dba
+	php5-sqlite3
+	php5-pear
+	php5-phpdbg
+	php5-gmp
+	php5-pdo_mysql
+	php5-pcntl
+	php5-common
+	php5-xsl
+	php5-fpm	
+	php5-mysql
+	php5-mysqli
+	php5-enchant
+	php5-pspell
+	php5-snmp
+	php5-doc
+	php5-xmlrpc
+	php5-embed
+	php5-xmlreader
+	php5-pdo_sqlite
+	php5-exif
+	php5-opcache
+	php5-ldap
+	php5-posix	
+	php5-gd
+	php5-gettext
+	php5-json
+	php5-xml
+	php5-iconv
+	php5-sysvshm
+	php5-curl
+	php5-shmop
+	php5-odbc
+	php5-phar
+	php5-pdo_pgsql
+	php5-imap
+	php5-pdo_dblib
+	php5-pgsql
+	php5-pdo_odbc
+	php5-zip
+	php5-cgi
+	php5-ctype
+	php5-mcrypt
+	php5-wddx
+	php5-bcmath
+	php5-calendar
+	php5-dom
+	php5-sockets
+	php5-soap
+	php5-apcu
+	php5-sysvmsg
+	php5-zlib
+	php5-ftp
+	php5-sysvsem 
+	php5-pdo
+	php5-bz2
+	php5-redis
+    php5-mbstring
+    php5-tokenizer
+
 ### I. Checking
 
 Run command and check http://localhost:8080
@@ -155,10 +220,107 @@ File `mysql.php`
     echo "\n";
     
     // Close DB connection
-    $conn->close();    
+    $conn->close();
 
-### III. Docker composer
+### III. Docker compose
 
-You should create `docker-compose.yml` to make everything better!
+File `docker-compose.yml`
+
+
+
+    version: '2.1'
+    services:
+    
+      web:
+        image: vinhxike/php5
+        hostname: myapp-web
+        container_name: myapp-web
+        labels:
+          SERVICE_NAME: myapp-web
+          SERVICE_80_NAME: myapp-web
+          SERVICE_443_NAME: myapp-web
+        ports:
+         - '8080:80'
+        depends_on:
+          db:
+            condition: service_healthy
+          mail:
+            condition: service_started
+          redis:
+            condition: service_started
+        environment:
+          APP_ENV: local
+          PHP_IDE_CONFIG: serverName=myapp-web.service.docker
+        volumes:
+        - ./:/home/www/app
+    
+      db:
+        image: mysql:5.7.35
+        #image: mysql:8.0.25
+        hostname: myapp-db
+        container_name: myapp-db
+        environment:
+          MYSQL_ROOT_PASSWORD: secret
+          MYSQL_DATABASE: myapp
+          MYSQL_USER: user
+          MYSQL_PASSWORD: secret
+        labels:
+          SERVICE_NAME: myapp-db
+          SERVICE_3306_NAME: myapp-db
+          SERVICE_33060_NAME: myapp-db
+        ports:
+          - '33060:3306'
+        healthcheck:
+          test: "/usr/bin/mysql --user=user --password=secret --execute \"SHOW DATABASES;\""
+          interval: 3s
+          timeout: 3s
+          retries: 10
+        command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
+        #command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci --default-authentication-plugin=mysql_native_password
+    
+      mail:
+        image: mailhog/mailhog
+        hostname: myapp-mail
+        container_name: myapp-mail
+        labels:
+            SERVICE_NAME: myapp-mail
+        ports:
+          - '8025:8025'
+    
+      redis:
+        image: redis:4.0.14-alpine3.11
+        hostname: myapp-redis
+        container_name: myapp-redis
+        labels:
+          SERVICE_NAME: myapp-redis
+
+
+File `Makefile`
+
+
+    all: run
+	
+	start: run
+	
+	run:
+		docker-compose -f docker-compose.yml -p myapp up -d web
+	
+	stop:
+		docker-compose -f docker-compose.yml -p myapp kill
+	
+	destroy:
+		docker-compose -f docker-compose.yml -p myapp down
+	
+	logs:
+		docker-compose -f docker-compose.yml -p myapp logs -f web
+	
+	shell:
+		docker-compose -f docker-compose.yml -p myapp exec --user nginx web bash
+	
+	root:
+		docker-compose -f docker-compose.yml -p myapp exec web bash
+	
+	ip:
+		docker inspect myapp-web | grep \"IPAddress\"
 
 Good Luck!!!
