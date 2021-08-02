@@ -30,6 +30,12 @@ run:
 		--network php5 \
 		mailhog/mailhog
 
+	# Step 3.1. Run redis server with instance name `php5-redis` and host name `php5-redis` in network `php5`
+	docker run --name php5-redis --rm -d -h php5-redis \
+		-l SERVICE_NAME=php5-redis \
+		--network php5 \
+		redis:4.0.14-alpine3.11
+
 	# Step 4. Run MySQL with instance name `php5-db` and host name `php5-db` in network `php5`
 	docker run --name php5-db --rm -d -h php5-db \
   		-e MYSQL_ROOT_PASSWORD=secret \
@@ -46,7 +52,7 @@ run:
   		--health-timeout 3s \
   		-p 3306:3306 \
   		--network php5 \
-  		mysql:5.7 \
+  		mysql:5.7.35 \
   		mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
 
 	# Step 5. Run Web app
