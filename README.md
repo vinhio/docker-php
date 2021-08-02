@@ -1,6 +1,6 @@
 ## PHP5 Base
 
-PHP5 Base provides a simple and completed PHP5.6.40 environment for the Legacy PHP code. Docker image built on top Alpine OS, Nginx, PHP 5, MySQL 5/8, Redis 4.3.0
+PHP5 Base provides a simple and completed PHP 5 environment for the Legacy PHP code. Docker image built on top Alpine OS, Nginx, PHP 5, MySQL 5/8, Redis 4
 
 - Alpine 3.8
 - Nginx 1.2
