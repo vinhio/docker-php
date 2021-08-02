@@ -1,7 +1,6 @@
 version: '2.1'
 services:
 
-  # docker build -f Dockerfile.base -t php5-base .
   base:
     build:
       context: ""
@@ -15,13 +14,13 @@ services:
       args:
         hostUID: 1000
         hostGID: 1000
-    image: php5-web
-    hostname: php5-web
-    container_name: php5-web
+    image: myapp-web
+    hostname: myapp-web
+    container_name: myapp-web
     labels:
-      SERVICE_NAME: php5-web
-      SERVICE_80_NAME: php5-web
-      SERVICE_443_NAME: php5-web
+      SERVICE_NAME: myapp-web
+      SERVICE_80_NAME: myapp-web
+      SERVICE_443_NAME: myapp-web
     ports:
      - '${FORWARD_WEB_PORT:-8080}:80'
      - '${FORWARD_WEB_PORT:-8443}:443'
@@ -34,26 +33,26 @@ services:
         condition: service_started
     environment:
       APP_ENV: local
-      PHP_IDE_CONFIG: serverName=php5-web.service.docker
+      PHP_IDE_CONFIG: serverName=myapp-web.service.docker
     volumes:
     - ../:/home/www/app
     networks:
-      - php5
+      - myapp
 
   db:
     image: mysql:5.7.35
     #image: mysql:8.0.25
-    hostname: php5-db
-    container_name: php5-db
+    hostname: myapp-db
+    container_name: myapp-db
     environment:
       MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: php5
+      MYSQL_DATABASE: myapp
       MYSQL_USER: user
       MYSQL_PASSWORD: secret
     labels:
-      SERVICE_NAME: php5-db
-      SERVICE_3306_NAME: php5-db
-      SERVICE_33060_NAME: php5-db
+      SERVICE_NAME: myapp-db
+      SERVICE_3306_NAME: myapp-db
+      SERVICE_33060_NAME: myapp-db
     ports:
       - '${FORWARD_DB_PORT:-3306}:3306'
     healthcheck:
@@ -64,31 +63,29 @@ services:
     command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
     #command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci --default-authentication-plugin=mysql_native_password
     networks:
-      - php5
+      - myapp
 
-  # docker network create php5
-  # docker run --name php5-mail --rm -h php5-mail -l SERVICE_NAME=php5-mail --network php5 mailhog/mailhog
   mail:
     image: mailhog/mailhog
-    hostname: php5-mail
-    container_name: php5-mail
+    hostname: myapp-mail
+    container_name: myapp-mail
     labels:
-        SERVICE_NAME: php5-mail
+        SERVICE_NAME: myapp-mail
     ports:
       - '${FORWARD_MAIL_PORT:-1025}:1025' # SMTP server
       - '${FORWARD_MAIL_PORT:-8025}:8025' # Web UI
     networks:
-      - php5
+      - myapp
 
   redis:
     image: redis:4.0.14-alpine3.11
-    hostname: php5-redis
-    container_name: php5-redis
+    hostname: myapp-redis
+    container_name: myapp-redis
     labels:
-      SERVICE_NAME: php5-redis
+      SERVICE_NAME: myapp-redis
     networks:
-      - php5
+      - myapp
 
 networks:
-  php5:
+  myapp:
     driver: bridge

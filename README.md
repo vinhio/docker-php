@@ -22,29 +22,29 @@ Let say code project use MySQL for persistence and Redis for caching. So, We nee
 - Container `Redis 4.0.14` for Caching server
 - Container `vinhxike/php5 latest` for Web application
 
-Every join to docker network `php5base`
+Every join to docker network `myapp`
 
 #### 1. Create network
 
-    docker network create php5base
+    docker network create myapp
 
 #### 2. Start MySQL 
 
-    docker run --name php5base-db --rm -d -h php5base-db \
+    docker run --name myapp-db --rm -d -h myapp-db \
   		-e MYSQL_ROOT_PASSWORD=secret \
-  		-e MYSQL_DATABASE=php5base \
+  		-e MYSQL_DATABASE=myapp \
   		-e MYSQL_USER=user \
   		-e MYSQL_PASSWORD=secret \
-  		-l SERVICE_NAME=php5base-db \
-  		-l SERVICE_3306_NAME=php5base-db \
-  		-l SERVICE_33060_NAME=php5base-db \
+  		-l SERVICE_NAME=myapp-db \
+  		-l SERVICE_3306_NAME=myapp-db \
+  		-l SERVICE_33060_NAME=myapp-db \
   		--health-cmd '/usr/bin/mysql --user=user --password=secret --execute "SHOW DATABASES;"' \
   		--health-interval 3s \
   		--health-retries 10 \
   		--health-start-period 3s \
   		--health-timeout 3s \
   		-p 3308:3306 \
-  		--network php5base \
+  		--network myapp \
   		mysql:5.7.35 \
   		mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
 
@@ -52,14 +52,14 @@ MySQL credentials:
 
     Username: `user`
     Password: `secret`
-    Database: `php5base`
+    Database: `myapp`
     Root's password: `secret`
 
 #### 3. Start Redis
 
-    docker run --name php5base-redis --rm -d -h php5base-redis \
-		-l SERVICE_NAME=php5base-redis \
-		--network php5base \
+    docker run --name myapp-redis --rm -d -h myapp-redis \
+		-l SERVICE_NAME=myapp-redis \
+		--network myapp \
 		redis:4.0.14-alpine3.11
 
 #### 4. Start Web server
@@ -74,24 +74,24 @@ Simple code project folder "/home/vinhxike". So
 Start web container
 
     cd /home/vinhxike/app
-    docker run --name php5base-web -p 8080:80 -v $(pwd):/home/www/app -l SERVICE_NAME=php5base-web --network php5base vinhxike/php5
+    docker run --name myapp-web -p 8080:80 -v $(pwd):/home/www/app -l SERVICE_NAME=myapp-web --network myapp vinhxike/php5
 
 #### 5. Docker containers
 
     docker ps
 
     CONTAINER ID   IMAGE                     COMMAND                  CREATED          STATUS                    PORTS                                                    NAMES
-    bd8a303e9a48   vinhxike/php5             "/init"                  6 seconds ago    Up 4 seconds              0.0.0.0:8080->80/tcp, :::8080->80/tcp                    php5base-web
-    0de16a4420b5   redis:4.0.14-alpine3.11   "docker-entrypoint.s…"   13 minutes ago   Up 13 minutes             6379/tcp                                                 php5base-redis
-    a20766bf34a9   mysql:5.7.35              "docker-entrypoint.s…"   13 minutes ago   Up 13 minutes (healthy)   33060/tcp, 0.0.0.0:33061->3306/tcp, :::33061->3306/tcp   php5base-db
+    bd8a303e9a48   vinhxike/php5             "/init"                  6 seconds ago    Up 4 seconds              0.0.0.0:8080->80/tcp, :::8080->80/tcp                    myapp-web
+    0de16a4420b5   redis:4.0.14-alpine3.11   "docker-entrypoint.s…"   13 minutes ago   Up 13 minutes             6379/tcp                                                 myapp-redis
+    a20766bf34a9   mysql:5.7.35              "docker-entrypoint.s…"   13 minutes ago   Up 13 minutes (healthy)   33060/tcp, 0.0.0.0:33061->3306/tcp, :::33061->3306/tcp   myapp-db
 
 #### 6. Check MySQL/Redis connection in Web container
 
-Go in `php5base-web`
+Go in `myapp-web`
 
-    docker exec -it -u nginx php5base-web bash
+    docker exec -it -u nginx myapp-web bash
 
-Check Redis (Inside `php5base-web`)
+Check Redis (Inside `myapp-web`)
 
     bash-4.4$ php redis.php
     ....
@@ -99,7 +99,7 @@ Check Redis (Inside `php5base-web`)
     Server is running: +PONG
     Stored string in redis:: Redis tutorial
 
-Check MySQL (Inside `php5base-web`)
+Check MySQL (Inside `myapp-web`)
 
     bash-4.4$ php mysql.php
     ....
@@ -123,7 +123,7 @@ File `redis.php`
     <?php
     //Connecting to Redis server on localhost
     $redis = new Redis();
-    $redis->connect('php5base-redis', 6379);
+    $redis->connect('myapp-redis', 6379);
     echo "Connection to server successful";
     
     //check whether server is running or not
@@ -139,10 +139,10 @@ File `redis.php`
 File `mysql.php`
 
     <?php
-    $servername = "php5base-db";
+    $servername = "myapp-db";
     $username = "user";
     $password = "secret";
-    $dbname = "php5base";
+    $dbname = "myapp";
     
     // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);
