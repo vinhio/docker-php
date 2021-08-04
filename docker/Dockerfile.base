@@ -3,6 +3,7 @@ FROM alpine:3.8
 ENV PHP_INI_DIR /etc/php5
 EXPOSE 80
 ENTRYPOINT ["/init"]
+# Set default working directory for whole docker execution
 WORKDIR /home/www/app
 ARG PHP_ENV
 
@@ -40,7 +41,9 @@ RUN apk add --update --no-cache bash \
 	#curl-dev \
     # Disable dev
     #libxml2-dev \
-	nginx
+	nginx \
+	# Install suid to run crontab non root users
+	busybox-suid
 
 # Install building packages (build Redis,....)
 #RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.8/community/ --allow-untrusted
