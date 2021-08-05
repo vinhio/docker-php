@@ -8,6 +8,7 @@ echo "Application folder belongs to nginx:nginx"
 
 # Both developer and application must be able modify it
 # Note: Don't need on Linux/Mac but need for Windows.
-chmod -Rc nginx:nginx .
+#chown -Rc nginx:nginx .
+chown nginx:nginx .
 
 # New group
