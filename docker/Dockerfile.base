@@ -165,12 +165,10 @@ ADD rootfs /
 RUN chown -R nginx:nginx /home/www/app
 
 ### Fix execute scripts when build docker on Windows
-#RUN dos2unix /etc/services.d/crond/run
-#RUN dos2unix /etc/services.d/nginx/run
-#RUN dos2unix /etc/services.d/nginx/finish
-#RUN dos2unix /etc/services.d/php5-fpm/run
-#RUN dos2unix /etc/services.d/php5-fpm/finish
-#RUN for file in /etc/cont-init.d; do \
-#    dos2unix $file; \
-#    chmod a+xwr $file; \
-#    done
+#RUN find /etc/cont-init.d -type f -print0 | xargs -0 dos2unix --
+#RUN find /etc/nginx -type f -print0 | xargs -0 dos2unix --
+#RUN find /etc/php5 -type f -print0 | xargs -0 dos2unix --
+#RUN find /etc/services.d -type f -print0 | xargs -0 dos2unix --
+#RUN find /home/www -type f -print0 | xargs -0 dos2unix --
+#RUN find /root -type f -print0 | xargs -0 dos2unix --
+#RUN find /tmp -type f -print0 | xargs -0 dos2unix --
