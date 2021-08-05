@@ -15,6 +15,9 @@ RUN echo "uid:gid=$hostUID:$hostGID" &&\
     adduser -S -u $hostUID -G nginx -h /home/www -s /sbin/nologin nginx &&\
     find /var -user $oldUID -exec chown -v $hostUID:$hostGID {} \;
 
+# In case build docker on Windows
+RUN apk add --update dos2unix
+
 ## Add some productivity tools for developer
 RUN apk add --update --no-cache \
     make mc tmux util-linux
@@ -37,3 +40,14 @@ RUN chown -R $hostUID:$hostGID $COMPOSER_HOME
 
 ### Copy configuration files
 ADD local /
+
+### Fix execute scripts when build docker on Windows
+RUN dos2unix /etc/services.d/crond/run
+RUN dos2unix /etc/services.d/nginx/run
+RUN dos2unix /etc/services.d/nginx/finish
+RUN dos2unix /etc/services.d/php5-fpm/run
+RUN dos2unix /etc/services.d/php5-fpm/finish
+RUN for file in /etc/cont-init.d; do \
+    dos2unix $file; \
+    chmod a+xwr $file; \
+    done
