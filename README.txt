@@ -10,6 +10,6 @@ Build date 2021-08-02 13:55:59 GMT+7
 #docker tag php5-base:latest vinhxike/php5:1.1
 #docker push vinhxike/php5:1.1
 
-Build date 2021-08-04 22:16:29 GMT+7
+Build date 2021-08-05 08:29:31 GMT+7
 #docker tag php5-base:latest vinhxike/php5:1.1.1
 #docker push vinhxike/php5:1.1.1
