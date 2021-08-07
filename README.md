@@ -7,6 +7,7 @@ PHP5 Base provides a simple and completed PHP 5 environment for the Legacy PHP c
 - PHP 5.6.40 (php-fpm)
 - MySQL 5.7.35 / MySQL 8
 - Redis 4.3.0
+- XDebug 2.5.5
 
 **Important:** If you want to build docker-php code base on Windows by yourself. Don't forget enable 
 `dos2unix` in file `docker/Dockerfile.base`
