@@ -147,7 +147,11 @@ RUN ln -s /usr/bin/php-config5 /usr/bin/php-config
 #    phpize && ./configure && make && make install && \
 #    #cp /tmp/phpredis-4.3.0/modules/redis.so /usr/lib/php5/modules/ && \
 #    cd ~ && rm -fr /tmp/phpredis-4.3.0 && rm -f /tmp/phpredis-4.3.0.tar.gz
-RUN echo "extension=redis.so" > /etc/php5/conf.d/redis.ini
+#RUN echo "extension=redis.so" > /etc/php5/conf.d/redis.ini
+
+#RUN wget https://github.com/sgerrand/alpine-pkg-php5-xdebug/releases/download/2.5.5-r0/php5-xdebug-2.5.5-r0.apk
+#RUN apk add --no-cache php5-xdebug-2.5.5-r0.apk
+#RUN echo "zend_extension=xdebug.so" > /etc/php5/conf.d/xdebug.ini
 
 # Install S6 overlay
 RUN curl -LSs -o /tmp/s6-overlay-amd64.tar.gz \
