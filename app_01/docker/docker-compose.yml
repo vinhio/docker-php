@@ -2,7 +2,7 @@ version: '2.1'
 services:
 
   web:
-    image: vinhxike/php7
+    image: vinhxike/php8
     hostname: myapp-web
     container_name: myapp-web
     labels:

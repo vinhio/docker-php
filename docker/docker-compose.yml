@@ -5,4 +5,4 @@ services:
     build:
       context: ""
       dockerfile: Dockerfile.base
-    image: php7-base
+    image: php8-base
