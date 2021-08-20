@@ -13,16 +13,16 @@ ARG VCS_REF
 ARG BUILD_VERSION
 
 # Labels.
-LABEL com.jiveio.schema-version="1.0"
-LABEL com.jiveio.build-date=$BUILD_DATE
-LABEL com.jiveio.name="vinhxike/docker-php:php5"
-LABEL com.jiveio.description="Docker PHP 5"
-LABEL com.jiveio.url="http://www.jiveio.com"
-LABEL com.jiveio.vcs-url="https://github.com/vinhxike/docker-php"
-LABEL com.jiveio.vcs-ref=$VCS_REF
-LABEL com.jiveio.vendor="JiveIO"
-LABEL com.jiveio.version=$BUILD_VERSION
-LABEL com.jiveio.docker.cmd="docker run -p 8080:80 php5-base"
+LABEL com.jivecode.schema-version="1.0" \
+    com.jivecode.build-date=$BUILD_DATE \
+    com.jivecode.name="vinhxike/docker-php:php5" \
+    com.jivecode.description="Docker PHP 5" \
+    com.jivecode.url="http://www.jivecode.com" \
+    com.jivecode.vcs-url="https://github.com/vinhxike/docker-php" \
+    com.jivecode.vcs-ref=$VCS_REF \
+    com.jivecode.vendor="JiveCode" \
+    com.jivecode.version=$BUILD_VERSION \
+    com.jivecode.docker.cmd="docker run -p 8080:80 php5-base"
 
 # Install packages
 RUN apk add --update --no-cache bash \
