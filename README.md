@@ -1,11 +1,11 @@
 ## PHP7 Base
 
-PHP7 Base provides a simple and completed PHP 7 environment for the Legacy PHP code. Docker image built on top Alpine OS, Nginx, PHP 7, MySQL 5/8, Redis 5
+PHP7 Base provides a simple and completed PHP 7 environment for PHP code. Docker image built on top Alpine OS, Nginx, PHP 7, MySQL 5/8, Redis 5
 
-- Alpine 3.13
-- Nginx 1.2
+- Alpine 3.14.1
+- Nginx 1.20.1
 - PHP 7.4.22 (php-fpm)
-- MySQL 5.7.35 / MySQL 8
+- MySQL 5.7.35 / 8.0.25
 - Redis 5.3.4
 - XDebug 3.0.4 
 
@@ -13,77 +13,75 @@ PHP7 Base provides a simple and completed PHP 7 environment for the Legacy PHP c
 `dos2unix` in file `docker/Dockerfile.base`
 
 #### PHP plugins:
-
-    php7    
-	php7-intl    
-	php7-openssl    
-	php7-dba    
-	php7-sqlite3    
-	php7-pear    
-	php7-phpdbg    
-	php7-gmp    
-	php7-pdo_mysql    
-	php7-pcntl    
-	php7-common    
-	php7-xsl    
-	php7-fpm    
-	#php7-mysql    
-	php7-mysqli    
-	php7-enchant    
-	php7-pspell    
-	php7-snmp    
-	php7-doc
-	php7-xmlrpc    
-	php7-embed    
-	php7-xmlreader    
-	php7-pdo_sqlite    
-	php7-exif    
-	php7-opcache    
-	php7-ldap    
-	php7-posix    
-	php7-gd    
-	php7-gettext    
-	php7-json    
-	php7-xml    
-	php7-iconv    
-	php7-sysvshm    
-	php7-curl    
-	php7-shmop    
-	php7-odbc    
-	php7-phar    
-	php7-pdo_pgsql    
-	php7-imap    
-	php7-pdo_dblib    
-	php7-pgsql    
-	php7-pdo_odbc    
-	php7-pecl-xdebug    
-	php7-zip    
-	php7-cgi    
-	php7-ctype    
-	php7-mcrypt
-	php7-bcmath    
-	php7-calendar    
-	php7-dom    
-	php7-sockets    
-	php7-soap    
-	php7-apcu    
-	php7-sysvmsg    
-	php7-zlib    
-	php7-ftp    
-	php7-sysvsem    
-	php7-pdo    
-	php7-bz2    
-	php7-tokenizer    
-    php7-xmlwriter    
-    php7-fileinfo    
-    php7-mbstring    
-    php7-dom    
-    php7-mysqlnd    
-    php7-session    
-    php7-tidy    
-    php7-simplexml    
-    php7-redis    
-    php7-imagick    
+    
+    php7
+    php7-intl
+    php7-openssl
+    php7-dba
+    php7-sqlite3
+    php7-pear
+    php7-phpdbg
+    php7-gmp
+    php7-pdo_mysql
+    php7-pcntl
+    php7-common
+    php7-xsl
+    php7-fpm
+    php7-mysqli
+    php7-enchant
+    php7-pspell
+    php7-snmp
+    php7-doc
+    php7-xmlrpc
+    php7-embed
+    php7-xmlreader
+    php7-pdo_sqlite
+    php7-exif
+    php7-opcache
+    php7-ldap
+    php7-posix
+    php7-gd
+    php7-gettext
+    php7-json
+    php7-xml
+    php7-iconv
+    php7-sysvshm
+    php7-curl
+    php7-shmop
+    php7-odbc
+    php7-phar
+    php7-pdo_pgsql
+    php7-imap
+    php7-pdo_dblib
+    php7-pgsql
+    php7-pdo_odbc
+    php7-pecl-xdebug
+    php7-zip
+    php7-cgi
+    php7-ctype
+    php7-mcrypt
+    php7-bcmath
+    php7-calendar
+    php7-dom
+    php7-sockets
+    php7-soap
+    php7-apcu
+    php7-sysvmsg
+    php7-zlib
+    php7-ftp
+    php7-sysvsem
+    php7-pdo
+    php7-bz2
+    php7-tokenizer
+    php7-xmlwriter
+    php7-fileinfo
+    php7-mbstring
+    php7-mysqlnd
+    php7-session
+    php7-tidy
+    php7-simplexml
+    php7-redis
+    php7-imagick
     php7-pecl-apcu
 
 ### I. Checking
