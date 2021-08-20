@@ -1,4 +1,4 @@
-FROM alpine:3.14
+FROM alpine:3.14.1
 
 ENV PHP_INI_DIR /etc/php8
 EXPOSE 80
@@ -38,7 +38,7 @@ RUN apk add --update --no-cache bash \
 # In case build docker on Windows
 #RUN apk add --update dos2unix
 
-# Upgrade PHP version 7.4
+# Upgrade PHP version 8
 RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community php
 
 # Install building packages (build XDebug,....)
@@ -77,7 +77,8 @@ RUN apk add --update --no-cache \
 	php8-doc \
 	# Disable dev
 	#php8-dev \
-	php8-xmlrpc \
+	# Don't have
+	#php8-xmlrpc \
 	php8-embed \
 	php8-xmlreader \
 	php8-pdo_sqlite \
@@ -104,14 +105,12 @@ RUN apk add --update --no-cache \
 	php8-zip \
 	php8-cgi \
 	php8-ctype \
-	php8-mcrypt \
 	#php8-wddx \
 	php8-bcmath \
 	php8-calendar \
 	php8-dom \
 	php8-sockets \
 	php8-soap \
-	php8-apcu \
 	php8-sysvmsg \
 	php8-zlib \
 	php8-ftp \
@@ -122,13 +121,13 @@ RUN apk add --update --no-cache \
     php8-xmlwriter \
     php8-fileinfo \
     php8-mbstring \
-    php8-dom \
     php8-mysqlnd \
     php8-session \
     php8-tidy \
     php8-simplexml \
     php8-redis \
-    php8-imagick \
+    php8-pecl-imagick \
+	php8-pecl-mcrypt \
     php8-pecl-apcu
 
 # Install XDebug from source
@@ -143,6 +142,7 @@ RUN rm -f /etc/php8/php-fpm.d/www.conf \
     && rm -rf /tmp/*
 
 # Create system link for php8 to php (Alias)
+RUN ln -s /usr/bin/php8 /usr/bin/php
 
 # Install S6 overlay
 RUN curl -LSs -o /tmp/s6-overlay-amd64.tar.gz \

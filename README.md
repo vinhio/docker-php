@@ -1,11 +1,11 @@
 ## PHP8 Base
 
-PHP8 Base provides a simple and completed PHP 8 environment for the Legacy PHP code. Docker image built on top Alpine OS, Nginx, php8, MySQL 5/8, Redis 5
+PHP8 Base provides a simple and completed PHP 8 environment for PHP code. Docker image built on top Alpine OS, Nginx, php8, MySQL 5/8, Redis 5
 
-- Alpine 3.13
-- Nginx 1.2
+- Alpine 3.14.1
+- Nginx 1.20.1
 - PHP 8.0.9 (php-fpm)
-- MySQL 5.7.35 / MySQL 8
+- MySQL 5.7.35 / 8.0.25
 - Redis 5.3.4
 - XDebug 3.0.4 
 
@@ -14,77 +14,75 @@ PHP8 Base provides a simple and completed PHP 8 environment for the Legacy PHP c
 
 #### PHP plugins:
 
-    php8    
-	php8-intl    
-	php8-openssl    
-	php8-dba    
-	php8-sqlite3    
-	php8-pear    
-	php8-phpdbg    
-	php8-gmp    
-	php8-pdo_mysql    
-	php8-pcntl    
-	php8-common    
-	php8-xsl    
-	php8-fpm    
-	#php8-mysql    
-	php8-mysqli    
-	php8-enchant    
-	php8-pspell    
-	php8-snmp    
-	php8-doc
-	php8-xmlrpc    
-	php8-embed    
-	php8-xmlreader    
-	php8-pdo_sqlite    
-	php8-exif    
-	php8-opcache    
-	php8-ldap    
-	php8-posix    
-	php8-gd    
-	php8-gettext    
-	php8-json    
-	php8-xml    
-	php8-iconv    
-	php8-sysvshm    
-	php8-curl    
-	php8-shmop    
-	php8-odbc    
-	php8-phar    
-	php8-pdo_pgsql    
-	php8-imap    
-	php8-pdo_dblib    
-	php8-pgsql    
-	php8-pdo_odbc    
-	php8-pecl-xdebug    
-	php8-zip    
-	php8-cgi    
-	php8-ctype    
-	php8-mcrypt
-	php8-bcmath    
-	php8-calendar    
-	php8-dom    
-	php8-sockets    
-	php8-soap    
-	php8-apcu    
-	php8-sysvmsg    
-	php8-zlib    
-	php8-ftp    
-	php8-sysvsem    
-	php8-pdo    
-	php8-bz2    
-	php8-tokenizer    
-    php8-xmlwriter    
-    php8-fileinfo    
-    php8-mbstring    
-    php8-dom    
-    php8-mysqlnd    
-    php8-session    
-    php8-tidy    
-    php8-simplexml    
-    php8-redis    
-    php8-imagick    
+    php8
+    php8-intl
+    php8-openssl
+    php8-dba
+    php8-sqlite3
+    php8-pear
+    php8-phpdbg
+    php8-gmp
+    php8-pdo_mysql
+    php8-pcntl
+    php8-common
+    php8-xsl
+    php8-fpm
+    #php8-mysql
+    php8-mysqli
+    php8-enchant
+    php8-pspell
+    php8-snmp
+    php8-doc
+    php8-embed
+    php8-xmlreader
+    php8-pdo_sqlite
+    php8-exif
+    php8-opcache
+    php8-ldap
+    php8-posix
+    php8-gd
+    php8-gettext
+    php8-json
+    php8-xml
+    php8-iconv
+    php8-sysvshm
+    php8-curl
+    php8-shmop
+    php8-odbc
+    php8-phar
+    php8-pdo_pgsql
+    php8-imap
+    php8-pdo_dblib
+    php8-pgsql
+    php8-pdo_odbc
+    php8-pecl-xdebug
+    php8-zip
+    php8-cgi
+    php8-ctype
+    php8-bcmath
+    php8-calendar
+    php8-dom
+    php8-sockets
+    php8-soap
+    php8-sysvmsg
+    php8-zlib
+    php8-ftp
+    php8-sysvsem
+    php8-pdo
+    php8-bz2
+    php8-tokenizer
+    php8-xmlwriter
+    php8-fileinfo
+    php8-mbstring
+    php8-mysqlnd
+    php8-session
+    php8-tidy
+    php8-simplexml
+    php8-redis
+    php8-pecl-imagick
+    php8-pecl-mcrypt
     php8-pecl-apcu
+
 
 ### I. Checking
 
@@ -96,8 +94,8 @@ Run command and check http://localhost:8080
 
 Let say code project use MySQL for persistence and Redis for caching. So, We need at least 3 containers.
 
-- Container `MySQL 5.7.35` for MySQL server
-- Container `Redis 4.0.14` for Caching server
+- Container `MySQL 8.0.25` for MySQL server
+- Container `Redis 6.2.5` for Caching server
 - Container `vinhxike/php8 latest` for Web application
 
 #### 1. Code structure
@@ -189,8 +187,8 @@ File `docker-compose.yml`
         - ./:/home/www/app
     
       db:
-        image: mysql:5.7.35
-        #image: mysql:8.0.25
+        #image: mysql:5.7.35
+        image: mysql:8.0.25
         hostname: myapp-db
         container_name: myapp-db
         environment:
@@ -205,12 +203,12 @@ File `docker-compose.yml`
         ports:
           - '33060:3306'
         healthcheck:
-          test: "/usr/bin/mysql --user=user --password=secret --execute \"SHOW DATABASES;\""
+          test: "/usr/bin/mysql --user=user --password=secret --execute"SHOW DATABASES;\""
           interval: 3s
           timeout: 3s
           retries: 10
-        command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
-        #command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci --default-authentication-plugin=mysql_native_password
+        #command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
+        command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci --default-authentication-plugin=mysql_native_password
     
       mail:
         image: mailhog/mailhog
@@ -222,7 +220,8 @@ File `docker-compose.yml`
           - '8025:8025'
     
       redis:
-        image: redis:4.0.14-alpine3.11
+        #image: redis:4.0.14-alpine3.11
+        image: redis:6.2.5-alpine3.14
         hostname: myapp-redis
         container_name: myapp-redis
         labels:
@@ -253,7 +252,7 @@ File `Makefile`
 		docker-compose -f docker-compose.yml -p myapp exec web bash
 	
 	ip:
-		docker inspect myapp-web | grep \"IPAddress\"
+		docker inspect myapp-web | grep"IPAddress\"
 
 #### 3. Start web container
 
@@ -268,8 +267,8 @@ Check docker container status
 
     CONTAINER ID   IMAGE                     COMMAND                  CREATED          STATUS                    PORTS                                                    NAMES
     bd8a303e9a48   vinhxike/php8             "/init"                  6 seconds ago    Up 4 seconds              0.0.0.0:8080->80/tcp, :::8080->80/tcp                    myapp-web
-    0de16a4420b5   redis:4.0.14-alpine3.11   "docker-entrypoint.s…"   13 minutes ago   Up 13 minutes             6379/tcp                                                 myapp-redis
-    a20766bf34a9   mysql:5.7.35              "docker-entrypoint.s…"   13 minutes ago   Up 13 minutes (healthy)   33060/tcp, 0.0.0.0:33061->3306/tcp, :::33061->3306/tcp   myapp-db
+    0de16a4420b5   redis:6.2.5-alpine3.14    "docker-entrypoint.s…"   13 minutes ago   Up 13 minutes             6379/tcp                                                 myapp-redis
+    a20766bf34a9   mysql:8.0.25              "docker-entrypoint.s…"   13 minutes ago   Up 13 minutes (healthy)   33060/tcp, 0.0.0.0:33061->3306/tcp, :::33061->3306/tcp   myapp-db
 
 ### III. Check results
 
