@@ -16,7 +16,8 @@ function start_service()
   [[ $? -eq 0 ]] && echo -e "${1} ${GREEN}started ${NC}"
 }
 
-# Run `stop_service php5-fpm`
+# Run `stop_service php-fpm7`
+#
 function stop_service()
 {
   s6-svc -d /var/run/s6/services/${1}

@@ -1,4 +1,4 @@
 alias ll='ls -la'
-alias composer='php5 -d xdebug.remote_enable=0 /usr/bin/composer'
-alias tests='php5 /home/www/app/vendor/bin/phpunit'
+alias composer='php -d xdebug.remote_enable=0 /usr/bin/composer'
+alias tests='php /home/www/app/vendor/bin/phpunit'
 alias fixpermissions='bash /etc/cont-init.d/01-set-permissions'
