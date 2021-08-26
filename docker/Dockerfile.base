@@ -166,7 +166,12 @@ RUN curl -LSs -o /tmp/s6-overlay-amd64.tar.gz \
 ADD rootfs /
 
 ### Change permission folders
-RUN chown -R nginx:nginx /home/www/app
+RUN nginxUID=`id -u nginx` &&\
+    nginxGID=`id -g nginx` &&\
+    deluser nginx &&\
+    addgroup -g $nginxGID nginx &&\
+    adduser -S -u $nginxUID -G nginx -h /home/www -s /sbin/nologin nginx &&\
+    chown -R nginx:nginx /home/www/app
 
 ### Fix execute scripts when build docker on Windows
 #RUN find /etc/cont-init.d -type f -print0 | xargs -0 dos2unix --
