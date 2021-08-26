@@ -1,4 +1,4 @@
-FROM alpine:3.14
+FROM alpine:3.14.1
 
 ENV PHP_INI_DIR /etc/php7
 EXPOSE 80
@@ -111,7 +111,6 @@ RUN apk add --update --no-cache \
 	php7-dom \
 	php7-sockets \
 	php7-soap \
-	php7-apcu \
 	php7-sysvmsg \
 	php7-zlib \
 	php7-ftp \
@@ -122,7 +121,6 @@ RUN apk add --update --no-cache \
     php7-xmlwriter \
     php7-fileinfo \
     php7-mbstring \
-    php7-dom \
     php7-mysqlnd \
     php7-session \
     php7-tidy \
