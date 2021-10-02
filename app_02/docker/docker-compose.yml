@@ -33,7 +33,7 @@ services:
       PHP_IDE_CONFIG: serverName=myapp-web.service.docker
     volumes:
     - ../:/home/www/app
-    # Override xdebug.ini of image `vinhxike/php7`
+    # Override xdebug.ini of image `vinhio/php7`
     - ./customize/etc/php7/conf.d/xdebug.ini:/etc/php7/conf.d/xdebug.ini
 
   db:

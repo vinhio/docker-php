@@ -15,10 +15,10 @@ ARG BUILD_VERSION
 # Labels.
 LABEL com.jivecode.schema-version="1.0" \
     com.jivecode.build-date=$BUILD_DATE \
-    com.jivecode.name="vinhxike/docker-php:php7" \
+    com.jivecode.name="vinhio/docker-php:php7" \
     com.jivecode.description="Docker PHP 7" \
     com.jivecode.url="http://www.jivecode.com" \
-    com.jivecode.vcs-url="https://github.com/vinhxike/docker-php" \
+    com.jivecode.vcs-url="https://github.com/vinhio/docker-php" \
     com.jivecode.vcs-ref=$VCS_REF \
     com.jivecode.vendor="JiveCode" \
     com.jivecode.version=$BUILD_VERSION \
