@@ -1,9 +1,6 @@
 VERSION ?= 'latest'
 
 build:
-	docker-compose -f docker/docker-compose.yml build base
-
-build_dev:
 	docker-compose -f docker/docker-compose.yml build --no-cache base
 
 run:
