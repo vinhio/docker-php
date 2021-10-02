@@ -88,7 +88,7 @@ PHP8 Base provides a simple and completed PHP 8 environment for PHP code. Docker
 
 Run command and check http://localhost:8080
 
-    docker run -p 8080:80 vinhxike/php8
+    docker run -p 8080:80 vinhio/php8
 
 ### II. Simple App structure
 
@@ -96,13 +96,13 @@ Let say code project use MySQL for persistence and Redis for caching. So, We nee
 
 - Container `MySQL 8.0.25` for MySQL server
 - Container `Redis 6.2.5` for Caching server
-- Container `vinhxike/php8 latest` for Web application
+- Container `vinhio/php8 latest` for Web application
 
 #### 1. Code structure
 
-Simple code project folder "/home/vinhxike/app". So
+Simple code project folder "/home/vinhio/app". So
 
-    /home/vinhxike/app
+    /home/vinhio/app
         |_ /index.php (Just print phpinfo())
         |_ /mysql.php (Check MySQL connection)
         |_ /redis.php (Check Redis connection)
@@ -164,7 +164,7 @@ File `docker-compose.yml`
     services:
     
       web:
-        image: vinhxike/php8
+        image: vinhio/php8
         hostname: myapp-web
         container_name: myapp-web
         labels:
@@ -258,7 +258,7 @@ File `Makefile`
 
 Start docker containers 
 
-    cd /home/vinhxike/app
+    cd /home/vinhio/app
     make run
 
 Check docker container status
@@ -266,7 +266,7 @@ Check docker container status
     docker ps
 
     CONTAINER ID   IMAGE                     COMMAND                  CREATED          STATUS                    PORTS                                                    NAMES
-    bd8a303e9a48   vinhxike/php8             "/init"                  6 seconds ago    Up 4 seconds              0.0.0.0:8080->80/tcp, :::8080->80/tcp                    myapp-web
+    bd8a303e9a48   vinhio/php8             "/init"                  6 seconds ago    Up 4 seconds              0.0.0.0:8080->80/tcp, :::8080->80/tcp                    myapp-web
     0de16a4420b5   redis:6.2.5-alpine3.14    "docker-entrypoint.s…"   13 minutes ago   Up 13 minutes             6379/tcp                                                 myapp-redis
     a20766bf34a9   mysql:8.0.25              "docker-entrypoint.s…"   13 minutes ago   Up 13 minutes (healthy)   33060/tcp, 0.0.0.0:33061->3306/tcp, :::33061->3306/tcp   myapp-db
 

@@ -8,8 +8,8 @@ run:
 
 version:
 	#make version VERSION="latest"
-	docker tag php8-base:latest vinhxike/php8:$(VERSION)
+	docker tag php8-base:latest vinhio/php8:$(VERSION)
 
 push:
 	#make push VERSION="latest"
-	docker push vinhxike/php8:$(VERSION)
+	docker push vinhio/php8:$(VERSION)
