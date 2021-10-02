@@ -1,4 +1,4 @@
-FROM vinhxike/php5:latest
+FROM vinhio/php5:latest
 
 VOLUME /home/www/app
 EXPOSE 80 443

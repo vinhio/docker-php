@@ -11,8 +11,8 @@ run:
 
 version:
 	#make version VERSION="latest"
-	docker tag php5-base:latest vinhxike/php5:$(VERSION)
+	docker tag php5-base:latest vinhio/php5:$(VERSION)
 
 push:
 	#make push VERSION="latest"
-	docker push vinhxike/php5:$(VERSION)
+	docker push vinhio/php5:$(VERSION)

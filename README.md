@@ -81,7 +81,7 @@ PHP5 Base provides a simple and completed PHP 5 environment for the Legacy PHP c
 
 Run command and check http://localhost:8080
 
-    docker run -p 8080:80 vinhxike/php5
+    docker run -p 8080:80 vinhio/php5
 
 ### II. Deploy and Work
 
@@ -89,7 +89,7 @@ Let say code project use MySQL for persistence and Redis for caching. So, We nee
 
 - Container `MySQL 5.7.35` for MySQL server
 - Container `Redis 4.0.14` for Caching server
-- Container `vinhxike/php5 latest` for Web application
+- Container `vinhio/php5 latest` for Web application
 
 Every join to docker network `myapp`
 
@@ -133,24 +133,24 @@ MySQL credentials:
 
 #### 4. Start Web server
 	
-Simple code project folder "/home/vinhxike". So
+Simple code project folder "/home/vinhio". So
 
-    /home/vinhxike/app
+    /home/vinhio/app
       |_ /index.php (Just print phpinfo())
       |_ /mysql.php (Check MySQL connection)
       |_ /redis.php (Check Redis connection)
 
 Start web container
 
-    cd /home/vinhxike/app
-    docker run --name myapp-web -p 8080:80 -v $(pwd):/home/www/app -l SERVICE_NAME=myapp-web --network myapp vinhxike/php5
+    cd /home/vinhio/app
+    docker run --name myapp-web -p 8080:80 -v $(pwd):/home/www/app -l SERVICE_NAME=myapp-web --network myapp vinhio/php5
 
 #### 5. Docker containers
 
     docker ps
 
     CONTAINER ID   IMAGE                     COMMAND                  CREATED          STATUS                    PORTS                                                    NAMES
-    bd8a303e9a48   vinhxike/php5             "/init"                  6 seconds ago    Up 4 seconds              0.0.0.0:8080->80/tcp, :::8080->80/tcp                    myapp-web
+    bd8a303e9a48   vinhio/php5             "/init"                  6 seconds ago    Up 4 seconds              0.0.0.0:8080->80/tcp, :::8080->80/tcp                    myapp-web
     0de16a4420b5   redis:4.0.14-alpine3.11   "docker-entrypoint.s…"   13 minutes ago   Up 13 minutes             6379/tcp                                                 myapp-redis
     a20766bf34a9   mysql:5.7.35              "docker-entrypoint.s…"   13 minutes ago   Up 13 minutes (healthy)   33060/tcp, 0.0.0.0:33061->3306/tcp, :::33061->3306/tcp   myapp-db
 
@@ -234,7 +234,7 @@ File `docker-compose.yml`
     services:
     
       web:
-        image: vinhxike/php5
+        image: vinhio/php5
         hostname: myapp-web
         container_name: myapp-web
         labels:
