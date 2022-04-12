@@ -7,14 +7,14 @@ chmod -R +x /etc/services.d
 echo "Application folder belongs to nginx:nginx"
 
 # Both developer and application must be able modify it
-# Note: Don't need on Linux/Mac but need for Windows.
 #chown -Rc nginx:nginx .
-chown nginx:nginx .
+ls | grep -v node_modules | grep -v vendor | xargs -n1 chown -R nginx:nginx
+find . -type d -exec chmod 775 {} \;
+find . -type f -exec chmod ug+rw {} \;
 
 echo "Nginx should be able to write uploaded files to temporary directory"
 chown root:nginx /tmp
 chmod 775 /tmp
-# For setting <DOCKER_DIR>/etc/php7/php-fpm.d/webapp.conf
 chmod 775 /var/log
 
 # New group
