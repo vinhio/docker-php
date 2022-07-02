@@ -203,7 +203,7 @@ File `docker-compose.yml`
         ports:
           - '33060:3306'
         healthcheck:
-          test: "/usr/bin/mysql --user=user --password=secret --execute"SHOW DATABASES;\""
+          test: "/usr/bin/mysql --user=user --password=secret --execute \"SHOW DATABASES;\""
           interval: 3s
           timeout: 3s
           retries: 10
