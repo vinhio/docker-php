@@ -252,7 +252,7 @@ File `Makefile`
 		docker-compose -f docker-compose.yml -p myapp exec web bash
 	
 	ip:
-		docker inspect myapp-web | grep"IPAddress\"
+		docker inspect myapp-web | grep \"IPAddress\"
 
 #### 3. Start web container
 
