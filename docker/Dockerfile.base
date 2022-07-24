@@ -1,9 +1,14 @@
-FROM alpine:3.14.1
+ARG PHP_VERSION="8.1.8"
+ARG ALPINE_VERSION="3.16"
+FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION}
+#FROM php:8.1.8-fpm-alpine3.16
 
-ENV PHP_INI_DIR /etc/php8
+#ENV PHP_INI_DIR /usr/local/etc/php
+#CONFIG files in /usr/local/etc/php/conf.d/
+#Extension files in /usr/local/lib/php/extensions/no-debug-non-zts-20210902
 EXPOSE 80
 ENTRYPOINT ["/init"]
-# Set default working directory for whole docker execution
+#WORKDIR /var/www/html
 WORKDIR /home/www/app
 ARG PHP_ENV
 
@@ -24,143 +29,71 @@ LABEL com.jivecode.schema-version="1.0" \
     com.jivecode.version=$BUILD_VERSION \
     com.jivecode.docker.cmd="docker run -p 8080:80 php8-base"
 
-# Install packages
+### Install packages
 RUN apk add --update --no-cache bash \
-	#ca-certificates \
-	#openssh-client \
-	#libmemcached-libs \
-	#openssl \
-	#libevent \
 	yaml \
 	curl \
+	#perl \
+    #wget \
+    #mysql-client \
 	nginx
 
-# In case build docker on Windows
-#RUN apk add --update dos2unix
+# Install PHP dependence libs
+RUN apk add --no-cache \
+    msmtp \
+    procps \
+    shadow \
+    libzip \
+    libpng \
+    libjpeg-turbo \
+    libwebp \
+    freetype \
+    icu
 
-# Upgrade PHP version 8 (Skip update. It will make error for PHP 8.0.21. Just keep PHP 8.0.13)
-# RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community php
+### Install PHP and related packages
+# Install PHP extensions deps
+RUN apk add --no-cache --virtual build-essentials \
+    icu-dev icu-libs zlib-dev g++ make automake autoconf libzip-dev \
+    libpng-dev libwebp-dev libjpeg-turbo-dev freetype-dev && \
+    docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp && \
+    docker-php-ext-install gd && \
+    docker-php-ext-install mysqli && \
+    docker-php-ext-install pdo_mysql && \
+    docker-php-ext-install intl && \
+    docker-php-ext-install opcache && \
+    docker-php-ext-install exif && \
+    docker-php-ext-install zip && \
+    docker-php-ext-install bcmath && \
+    docker-php-ext-install bz2 && \
+    docker-php-ext-install calendar && \
+    docker-php-ext-install dba && \
+    docker-php-ext-install intl && \
+    docker-php-ext-install pcntl && \
+    docker-php-ext-install shmop && \
+    docker-php-ext-install sockets && \
+    docker-php-ext-install sysvmsg && \
+    docker-php-ext-install sysvsem && \
+    docker-php-ext-install sysvshm && \
+    pecl install -o -f redis && docker-php-ext-enable redis && \
+    pecl install xdebug-3.1.5 && docker-php-ext-enable xdebug && \
+    apk del build-essentials && rm -rf /usr/src/php*
 
-# Install building packages (build XDebug,....)
-#RUN apk add --update --no-cache \
-#     libgcc \
-#     libstdc++ \
-#     glib \
-#     gcc \
-#     libevent-dev \
-#     openssl-dev \
-#     libc-dev \
-#     make \
-#     autoconf \
-#     libtool
+# https://github.com/mlocati/docker-php-extension-installer
+#bcmath bz2 calendar ctype curl dba dl_test dom enchant exif ffi fileinfo filter ftp gd gettext gmp hash iconv imap
+#intl json ldap mbstring mysqli oci8 odbc opcache pcntl pdo pdo_dblib pdo_firebird pdo_mysql pdo_oci pdo_odbc pdo_pgsql
+#pdo_sqlite pgsql phar posix pspell readline reflection session shmop simplexml snmp soap sockets sodium spl standard
+#sysvmsg sysvsem sysvshm tidy tokenizer xml xmlreader xmlwriter xsl zend_test zip
 
-# Install PHP and related packages
-RUN apk add --update --no-cache \
-	php8 \
-	php8-intl \
-	php8-openssl \
-	php8-dba \
-	php8-sqlite3 \
-	php8-pear \
-	php8-phpdbg \
-	php8-gmp \
-	php8-pdo_mysql \
-	php8-pcntl \
-	php8-common \
-	php8-xsl \
-	php8-fpm \
-	#php8-mysql \
-	php8-mysqli \
-	php8-enchant \
-	php8-pspell \
-	php8-snmp \
-	php8-doc \
-	# Disable dev
-	#php8-dev \
-	# Don't have
-	#php8-xmlrpc \
-	php8-embed \
-	php8-xmlreader \
-	php8-pdo_sqlite \
-	php8-exif \
-	php8-opcache \
-	php8-ldap \
-	php8-posix \
-	php8-gd \
-	php8-gettext \
-	php8-json \
-	php8-xml \
-	php8-iconv \
-	php8-sysvshm \
-	php8-curl \
-	php8-shmop \
-	php8-odbc \
-	php8-phar \
-	php8-pdo_pgsql \
-	php8-imap \
-	php8-pdo_dblib \
-	php8-pgsql \
-	php8-pdo_odbc \
-	php8-pecl-xdebug \
-	php8-zip \
-	php8-cgi \
-	php8-ctype \
-	#php8-wddx \
-	php8-bcmath \
-	php8-calendar \
-	php8-dom \
-	php8-sockets \
-	php8-soap \
-	php8-sysvmsg \
-	php8-zlib \
-	php8-ftp \
-	php8-sysvsem \
-	php8-pdo \
-	php8-bz2 \
-	php8-tokenizer \
-    php8-xmlwriter \
-    php8-fileinfo \
-    php8-mbstring \
-    php8-mysqlnd \
-    php8-session \
-    php8-tidy \
-    php8-simplexml \
-    php8-redis \
-    php8-pecl-imagick \
-	php8-pecl-mcrypt \
-    php8-pecl-apcu
-
-# Install XDebug from source
-#RUN pecl install xdebug
-
-# Remove redundant file
-RUN rm -f /etc/php8/php-fpm.d/www.conf \
-    && rm -f /etc/php8/conf.d/00_zlib.ini \
-    && rm -f /etc/php8/conf.d/50_xdebug.ini \
-    && rm -f /etc/nginx/conf.d/default.conf \
-    && rm -rf /var/cache/apk/* \
-    && rm -rf /tmp/*
-
-# Create system link for php8 to php (Alias)
-RUN ln -s /usr/bin/php8 /usr/bin/php
-
-# Install S6 overlay
+### Install S6 overlay
 RUN curl -LSs -o /tmp/s6-overlay-amd64.tar.gz \
     https://github.com/just-containers/s6-overlay/releases/download/v2.2.0.3/s6-overlay-amd64.tar.gz && \
     tar xzf /tmp/s6-overlay-amd64.tar.gz -C / && \
     rm -f /tmp/s6-overlay-amd64.tar.gz
 
-# Remove building packages
-#RUN apk del libgcc \
-#     libstdc++ \
-#     glib \
-#     gcc \
-#     libevent-dev \
-#     openssl-dev \
-#     libc-dev \
-#     make \
-#     autoconf \
-#     libtool
+# Remove/Replace files
+RUN rm -f /usr/local/etc/php-fpm.conf && \
+    mv /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini.bk && \
+    rm -rf /tmp/*
 
 ### Copy configuration files
 ADD rootfs /
@@ -172,12 +105,3 @@ RUN nginxUID=`id -u nginx` &&\
     addgroup -g $nginxGID nginx &&\
     adduser -S -u $nginxUID -G nginx -h /home/www -s /sbin/nologin nginx &&\
     chown -R nginx:nginx /home/www/app
-
-### Fix execute scripts when build docker on Windows
-#RUN find /etc/cont-init.d -type f -print0 | xargs -0 dos2unix --
-#RUN find /etc/nginx -type f -print0 | xargs -0 dos2unix --
-#RUN find /etc/php8 -type f -print0 | xargs -0 dos2unix --
-#RUN find /etc/services.d -type f -print0 | xargs -0 dos2unix --
-#RUN find /home/www -type f -print0 | xargs -0 dos2unix --
-#RUN find /root -type f -print0 | xargs -0 dos2unix --
-#RUN find /tmp -type f -print0 | xargs -0 dos2unix --

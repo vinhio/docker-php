@@ -32,9 +32,9 @@ services:
       APP_ENV: local
       PHP_IDE_CONFIG: serverName=myapp-web.service.docker
     volumes:
-    - ../:/home/www/app
-    # Override xdebug.ini of image `vinhio/php8`
-    - ./customize/etc/php8/conf.d/xdebug.ini:/etc/php8/conf.d/xdebug.ini
+      - ../:/home/www/app
+      # Override xdebug.ini of image `vinhio/php8`
+      - ./customize/usr/local/etc/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
 
   db:
     #image: mysql:5.7.35
