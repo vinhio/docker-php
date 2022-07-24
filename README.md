@@ -3,9 +3,9 @@
 PHP8 Base provides a simple and completed PHP 8 environment for PHP code. Docker image built on top Alpine OS, Nginx, php8, MySQL 5/8, Redis 5
 
 - Alpine 3.14.1
-- Nginx 1.20.1
-- PHP 8.0.9 (php-fpm)
-- MySQL 5.7.35 / 8.0.25
+- Nginx 1.20.2
+- PHP 8.0.13
+- MySQL 8.0.13
 - Redis 5.3.4
 - XDebug 3.0.4 
 
@@ -14,75 +14,12 @@ PHP8 Base provides a simple and completed PHP 8 environment for PHP code. Docker
 
 #### PHP plugins:
 
-    php8
-    php8-intl
-    php8-openssl
-    php8-dba
-    php8-sqlite3
-    php8-pear
-    php8-phpdbg
-    php8-gmp
-    php8-pdo_mysql
-    php8-pcntl
-    php8-common
-    php8-xsl
-    php8-fpm
-    #php8-mysql
-    php8-mysqli
-    php8-enchant
-    php8-pspell
-    php8-snmp
-    php8-doc
-    php8-embed
-    php8-xmlreader
-    php8-pdo_sqlite
-    php8-exif
-    php8-opcache
-    php8-ldap
-    php8-posix
-    php8-gd
-    php8-gettext
-    php8-json
-    php8-xml
-    php8-iconv
-    php8-sysvshm
-    php8-curl
-    php8-shmop
-    php8-odbc
-    php8-phar
-    php8-pdo_pgsql
-    php8-imap
-    php8-pdo_dblib
-    php8-pgsql
-    php8-pdo_odbc
-    php8-pecl-xdebug
-    php8-zip
-    php8-cgi
-    php8-ctype
-    php8-bcmath
-    php8-calendar
-    php8-dom
-    php8-sockets
-    php8-soap
-    php8-sysvmsg
-    php8-zlib
-    php8-ftp
-    php8-sysvsem
-    php8-pdo
-    php8-bz2
-    php8-tokenizer
-    php8-xmlwriter
-    php8-fileinfo
-    php8-mbstring
-    php8-mysqlnd
-    php8-session
-    php8-tidy
-    php8-simplexml
-    php8-redis
-    php8-pecl-imagick
-    php8-pecl-mcrypt
-    php8-pecl-apcu
-
+    php8, php8-intl, php8-openssl, php8-dba, php8-sqlite3, php8-pear, php8-phpdbg, php8-gmp, php8-pdo_mysql, php8-pcntl, php8-common, php8-xsl, 
+    php8-fpm, php8-mysqli, php8-enchant, php8-pspell, php8-snmp, php8-doc, php8-embed, php8-xmlreader, php8-pdo_sqlite, php8-exif, php8-opcache, 
+    php8-ldap, php8-posix, php8-gd, php8-gettext, php8-json, php8-xml, php8-iconv, php8-sysvshm, php8-curl, php8-shmop, php8-odbc, php8-phar, 
+    php8-pdo_pgsql, php8-imap, php8-pdo_dblib, php8-pgsql, php8-pdo_odbc, php8-pecl-xdebug, php8-zip, php8-cgi, php8-ctype, php8-bcmath, 
+    php8-calendar, php8-dom, php8-sockets, php8-soap, php8-sysvmsg, php8-zlib, php8-ftp, php8-sysvsem, php8-pdo, php8-bz2, php8-tokenizer, php8-xmlwriter, 
+    php8-fileinfo, php8-mbstring, php8-mysqlnd, php8-session, php8-tidy, php8-simplexml, php8-redis, php8-pecl-imagick, php8-pecl-mcrypt, php8-pecl-apcu
 
 ### I. Checking
 
@@ -92,7 +29,7 @@ Run command and check http://localhost:8080
 
 ### II. Simple App structure
 
-Let say code project use MySQL for persistence and Redis for caching. So, We need at least 3 containers.
+Let say code project use MySQL for persistence, Redis for caching and Mail. So, We need at least 4 containers.
 
 - Container `MySQL 8.0.25` for MySQL server
 - Container `Redis 6.2.5` for Caching server
@@ -106,7 +43,8 @@ Simple code project folder "/home/vinhio/app". So
         |_ /index.php (Just print phpinfo())
         |_ /mysql.php (Check MySQL connection)
         |_ /redis.php (Check Redis connection)
-        |_ /docker-compose.yml
+        |_ /ci/docker/docker-compose.yml
+        |_ /ci/docker/Dockerfile.yml
         |_ /Makefile 
 
 
@@ -158,13 +96,19 @@ File `mysql.php`
 
 #### 2. Docker compose
 
-File `docker-compose.yml`
+File `ci/docker/docker-compose.yml`
 
     version: '2.1'
     services:
     
       web:
-        image: vinhio/php8
+        build:
+          context: ""
+          dockerfile: Dockerfile
+          args:
+            hostUID: 1000
+            hostGID: 1000
+        image: myapp-web
         hostname: myapp-web
         container_name: myapp-web
         labels:
@@ -184,7 +128,7 @@ File `docker-compose.yml`
           APP_ENV: local
           PHP_IDE_CONFIG: serverName=myapp-web.service.docker
         volumes:
-        - ./:/home/www/app
+        - ../../:/home/www/app
     
       db:
         #image: mysql:5.7.35
@@ -227,10 +171,35 @@ File `docker-compose.yml`
         labels:
           SERVICE_NAME: myapp-redis
 
-File `Makefile`
+File `ci/docker/Dockerfile`
 
-    all: run
-	
+    FROM vinhio/php8:latest
+
+    VOLUME /home/www/app
+    EXPOSE 80 443
+
+    # Replace default nginx user and group with IDs, matching current host user (developer)
+    ARG hostUID=1000
+    ARG hostGID=1000
+    ENV hostUID=$hostUID
+    ENV hostGID=$hostGID
+    RUN echo "uid:gid=$hostUID:$hostGID" &&\
+        oldUID=`id -u nginx` &&\
+        deluser nginx &&\
+        addgroup -g $hostGID nginx &&\
+        adduser -S -u $hostUID -G nginx -h /home/www -s /sbin/nologin nginx &&\
+        find /var -user $oldUID -exec chown -v $hostUID:$hostGID {} \;
+
+
+#### 3. Others
+
+File `Makefile` support run commands quickly
+
+    all: build run
+
+    build:
+		docker-compose -f ci/docker/docker-compose.yml build --no-cache --build-arg hostUID=1000 --build-arg hostGID=1000 web
+
 	start: run
 	
 	run:
@@ -265,10 +234,11 @@ Check docker container status
 
     docker ps
 
-    CONTAINER ID   IMAGE                     COMMAND                  CREATED          STATUS                    PORTS                                                    NAMES
-    bd8a303e9a48   vinhio/php8             "/init"                  6 seconds ago    Up 4 seconds              0.0.0.0:8080->80/tcp, :::8080->80/tcp                    myapp-web
-    0de16a4420b5   redis:6.2.5-alpine3.14    "docker-entrypoint.s…"   13 minutes ago   Up 13 minutes             6379/tcp                                                 myapp-redis
-    a20766bf34a9   mysql:8.0.25              "docker-entrypoint.s…"   13 minutes ago   Up 13 minutes (healthy)   33060/tcp, 0.0.0.0:33061->3306/tcp, :::33061->3306/tcp   myapp-db
+    CONTAINER ID   IMAGE                    COMMAND                  CREATED          STATUS                    PORTS                                                    NAMES
+    dbbe6281991b   myapp-web                "/init"                  4 seconds ago    Up 3 seconds              443/tcp, 0.0.0.0:8080->80/tcp, :::8080->80/tcp           myapp-web
+    722cb84dbab2   mailhog/mailhog          "MailHog"                23 seconds ago   Up 23 seconds             1025/tcp, 0.0.0.0:8025->8025/tcp, :::8025->8025/tcp      myapp-mail
+    f6f07c225f7f   mysql:8.0.25             "docker-entrypoint.s…"   23 seconds ago   Up 23 seconds (healthy)   33060/tcp, 0.0.0.0:33060->3306/tcp, :::33060->3306/tcp   myapp-db
+    d50b9ba252dc   redis:6.2.5-alpine3.14   "docker-entrypoint.s…"   23 seconds ago   Up 23 seconds             6379/tcp                                                 myapp-redis
 
 ### III. Check results
 
@@ -276,7 +246,11 @@ Go to container `myapp-web`
 
     docker exec -it -u nginx myapp-web bash
 
-Check Redis (Inside `myapp-web`)
+or
+
+    make shell
+
+Check Redis (Inside `myapp-web`. By run `make shell`)
 
     bash-4.4$ php redis.php
     ....
@@ -284,13 +258,13 @@ Check Redis (Inside `myapp-web`)
     Server is running: +PONG
     Stored string in redis:: Redis tutorial
 
-Check MySQL (Inside `myapp-web`)
+Check MySQL (Inside `myapp-web`. By run `make shell`)
 
     bash-4.4$ php mysql.php
     ....
     Connected successfully
 
-You can check all step via HTTP:
+You can check all steps via HTTP:
 
     http://localhost:8080/index.php
     http://localhost:8080/mysql.php

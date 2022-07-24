@@ -38,8 +38,8 @@ RUN apk add --update --no-cache bash \
 # In case build docker on Windows
 #RUN apk add --update dos2unix
 
-# Upgrade PHP version 8
-RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community php
+# Upgrade PHP version 8 (Skip update. It will make error for PHP 8.0.21. Just keep PHP 8.0.13)
+# RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community php
 
 # Install building packages (build XDebug,....)
 #RUN apk add --update --no-cache \
