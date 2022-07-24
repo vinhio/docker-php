@@ -203,22 +203,22 @@ File `Makefile` support run commands quickly
 	start: run
 	
 	run:
-		docker-compose -f docker-compose.yml -p myapp up -d web
+		docker-compose -f ci/docker/docker-compose.yml -p myapp up -d web
 	
 	stop:
-		docker-compose -f docker-compose.yml -p myapp kill
+		docker-compose -f ci/docker/docker-compose.yml -p myapp kill
 	
 	destroy:
-		docker-compose -f docker-compose.yml -p myapp down
+		docker-compose -f ci/docker/docker-compose.yml -p myapp down
 	
 	logs:
-		docker-compose -f docker-compose.yml -p myapp logs -f web
+		docker-compose -f ci/docker/docker-compose.yml -p myapp logs -f web
 	
 	shell:
-		docker-compose -f docker-compose.yml -p myapp exec --user nginx web bash
+		docker-compose -f ci/docker/docker-compose.yml -p myapp exec --user nginx web bash
 	
 	root:
-		docker-compose -f docker-compose.yml -p myapp exec web bash
+		docker-compose -f ci/docker/docker-compose.yml -p myapp exec web bash
 	
 	ip:
 		docker inspect myapp-web | grep \"IPAddress\"
@@ -239,6 +239,14 @@ Check docker container status
     722cb84dbab2   mailhog/mailhog          "MailHog"                23 seconds ago   Up 23 seconds             1025/tcp, 0.0.0.0:8025->8025/tcp, :::8025->8025/tcp      myapp-mail
     f6f07c225f7f   mysql:8.0.25             "docker-entrypoint.s…"   23 seconds ago   Up 23 seconds (healthy)   33060/tcp, 0.0.0.0:33060->3306/tcp, :::33060->3306/tcp   myapp-db
     d50b9ba252dc   redis:6.2.5-alpine3.14   "docker-entrypoint.s…"   23 seconds ago   Up 23 seconds             6379/tcp                                                 myapp-redis
+
+Stop docker containers
+
+    make stop
+
+Xóa docker containers
+
+    make destroy
 
 ### III. Check results
 
