@@ -56,7 +56,7 @@ File `redis.php`
     //Connecting to Redis server on localhost
     $redis = new Redis();
     $redis->connect('myapp-redis', 6379);
-    echo "Connection to server successful";
+    echo "Connect to server successful";
     
     //check whether server is running or not
     echo "\nServer is running: ".$redis->ping();
