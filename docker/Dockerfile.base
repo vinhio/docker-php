@@ -1,4 +1,4 @@
-FROM alpine:3.14.1
+FROM arm64v8/alpine:3.14.1
 
 ENV PHP_INI_DIR /etc/php7
 EXPOSE 80
@@ -143,10 +143,10 @@ RUN rm -f /etc/php7/php-fpm.d/www.conf \
 # Create system link for php7 to php (Alias)
 
 # Install S6 overlay
-RUN curl -LSs -o /tmp/s6-overlay-amd64.tar.gz \
-    https://github.com/just-containers/s6-overlay/releases/download/v2.2.0.3/s6-overlay-amd64.tar.gz && \
-    tar xzf /tmp/s6-overlay-amd64.tar.gz -C / && \
-    rm -f /tmp/s6-overlay-amd64.tar.gz
+RUN curl -LSs -o /tmp/s6-overlay-aarch64.tar.gz \
+    https://github.com/just-containers/s6-overlay/releases/download/v2.2.0.3/s6-overlay-aarch64.tar.gz && \
+    tar xzf /tmp/s6-overlay-aarch64.tar.gz -C / && \
+    rm -f /tmp/s6-overlay-aarch64.tar.gz
 
 # Remove building packages
 #RUN apk del libgcc \

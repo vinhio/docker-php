@@ -1,4 +1,4 @@
-FROM vinhio/php7:latest
+FROM vinhio/php7:arm64
 
 VOLUME /home/www/app
 EXPOSE 80 443

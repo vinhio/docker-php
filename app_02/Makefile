@@ -1,7 +1,8 @@
 all: build run
 
 build:
-	docker-compose -f docker/docker-compose.yml build --no-cache --build-arg hostUID=1000 --build-arg hostGID=1000 web
+	#docker-compose -f docker/docker-compose.yml build --no-cache --build-arg hostUID=1000 --build-arg hostGID=1000 web
+	cd docker && docker buildx build -f Dockerfile.local -t myapp-web:latest --no-cache --build-arg hostUID=1000 --build-arg hostGID=1000 --platform linux/arm64 . && cd ../
 
 start: run
 
