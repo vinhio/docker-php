@@ -1,11 +1,11 @@
-## PHP7 Base
+## PHP7 Base (ARM64 for Mac M1)
 
 PHP7 Base provides a simple and completed PHP 7 environment for PHP code. Docker image built on top Alpine OS, Nginx, PHP 7, MySQL 5/8, Redis 5
 
 - Alpine 3.14.1
 - Nginx 1.20.1
 - PHP 7.4.22 (php-fpm)
-- MySQL 5.7.35 / 8.0.25
+- MySQL 8.0.25
 - Redis 5.3.4
 - XDebug 3.0.4 
 
@@ -164,7 +164,8 @@ File `docker-compose.yml`
     services:
     
       web:
-        image: vinhio/php7
+        image: vinhio/php7:arm64
+        platform: linux/arm64
         hostname: myapp-web
         container_name: myapp-web
         labels:
@@ -184,11 +185,11 @@ File `docker-compose.yml`
           APP_ENV: local
           PHP_IDE_CONFIG: serverName=myapp-web.service.docker
         volumes:
-        - ./:/home/www/app
+          - ../:/home/www/app
     
       db:
-        image: mysql:5.7.35
-        #image: mysql:8.0.25
+        image: arm64v8/mysql:8.0.31
+        platform: linux/arm64
         hostname: myapp-db
         container_name: myapp-db
         environment:
@@ -207,11 +208,11 @@ File `docker-compose.yml`
           interval: 3s
           timeout: 3s
           retries: 10
-        command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
-        #command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci --default-authentication-plugin=mysql_native_password
+        command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci --default-authentication-plugin=mysql_native_password
     
       mail:
-        image: mailhog/mailhog
+        image: jcalonso/mailhog
+        platform: linux/arm64
         hostname: myapp-mail
         container_name: myapp-mail
         labels:
@@ -220,7 +221,8 @@ File `docker-compose.yml`
           - '8025:8025'
     
       redis:
-        image: redis:4.0.14-alpine3.11
+        image: arm64v8/redis:4.0.14-alpine3.11
+        platform: linux/arm64
         hostname: myapp-redis
         container_name: myapp-redis
         labels:
