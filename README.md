@@ -1,9 +1,8 @@
-## PHP8 Base
+## PHP8 Base (ARM64 for Mac M1)
 
 PHP8 Base provides a simple and completed PHP 8 environment for PHP code. Docker image built on top Alpine OS, Nginx, php8, MySQL 5/8, Redis 5
 
     Version vinhio/php8:8.1.8 : Alpine 3.16, Nginx 1.22, PHP 8.1.8, MySQL 8.1.8, Redis 5.3.7, XDebug 3.1.5
-    Version vinhio/php8:8.0.13 : Alpine 3.14.1, Nginx 1.20.2, PHP 8.0.13, MySQL 8.0.13, Redis 5.3.4, XDebug 3.0.4
 
 **Important:** If you want to build docker-php code base on Windows by yourself. Don't forget enable 
 `dos2unix` in file `docker/Dockerfile.base`
@@ -21,7 +20,7 @@ PHP8 Base provides a simple and completed PHP 8 environment for PHP code. Docker
 
 Run command and check http://localhost:8080
 
-    docker run -p 8080:80 vinhio/php8
+    docker run --platform=linux/arm64 -p 8080:80 vinhio/php8:arm64
 
 ### II. Simple App structure
 
@@ -29,7 +28,7 @@ Let say code project use MySQL for persistence, Redis for caching and Mail. So, 
 
 - Container `MySQL 8.0.25` for MySQL server
 - Container `Redis 6.2.5` for Caching server
-- Container `vinhio/php8 latest` for Web application
+- Container `vinhio/php8:arm64` for Web application
 
 #### 1. Code structure
 
@@ -104,6 +103,7 @@ File `ci/docker/docker-compose.yml`
           args:
             hostUID: 1000
             hostGID: 1000
+        platform: linux/arm64
         image: myapp-web
         hostname: myapp-web
         container_name: myapp-web
@@ -127,8 +127,8 @@ File `ci/docker/docker-compose.yml`
         - ../../:/home/www/app
     
       db:
-        #image: mysql:5.7.35
-        image: mysql:8.0.25
+        image: arm64v8/mysql:8.0.31
+        platform: linux/arm64
         hostname: myapp-db
         container_name: myapp-db
         environment:
@@ -147,11 +147,11 @@ File `ci/docker/docker-compose.yml`
           interval: 3s
           timeout: 3s
           retries: 10
-        #command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
         command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci --default-authentication-plugin=mysql_native_password
     
       mail:
-        image: mailhog/mailhog
+        image: jcalonso/mailhog
+        platform: linux/arm64
         hostname: myapp-mail
         container_name: myapp-mail
         labels:
@@ -160,8 +160,8 @@ File `ci/docker/docker-compose.yml`
           - '8025:8025'
     
       redis:
-        #image: redis:4.0.14-alpine3.11
-        image: redis:6.2.5-alpine3.14
+        image: arm64v8/redis:4.0.14-alpine3.11
+        platform: linux/arm64
         hostname: myapp-redis
         container_name: myapp-redis
         labels:
@@ -169,7 +169,7 @@ File `ci/docker/docker-compose.yml`
 
 File `ci/docker/Dockerfile`
 
-    FROM vinhio/php8:latest
+    FROM vinhio/php8:arm64
 
     VOLUME /home/www/app
     EXPOSE 80 443
@@ -191,10 +191,12 @@ File `ci/docker/Dockerfile`
 
 File `Makefile` support run commands quickly
 
-    all: build run
+	all: build run
 
-    build:
-		docker-compose -f ci/docker/docker-compose.yml build --no-cache --build-arg hostUID=1000 --build-arg hostGID=1000 web
+	build:
+		cd docker && \
+		docker buildx build -f Dockerfile -t myapp-web:latest --no-cache --build-arg hostUID=1000 --build-arg hostGID=1000 --platform linux/arm64 . && \
+		cd ../
 
 	start: run
 	

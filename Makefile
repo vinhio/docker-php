@@ -1,15 +1,15 @@
 VERSION ?= 'latest'
 
 build:
-	docker-compose2 -f docker/docker-compose.yml build --no-cache base
+	cd docker && \
+ 	docker buildx build -f Dockerfile.base -t php8-base:arm64 --no-cache --platform linux/arm64 . && \
+ 	cd ../
 
 run:
-	docker run -p 8080:80 php8-base
+	docker run --platform=linux/arm64 -p 8080:80 php8-base:arm64
 
 version:
-	#make version VERSION="latest"
-	docker tag php8-base:latest vinhio/php8:$(VERSION)
+	docker tag php8-base:arm64 vinhio/php8:arm64
 
 push:
-	#make push VERSION="latest"
-	docker push vinhio/php8:$(VERSION)
+	docker push vinhio/php8:arm64
