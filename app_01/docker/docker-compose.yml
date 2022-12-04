@@ -1,8 +1,9 @@
-version: '2.1'
-services:
+version: '3'
 
+services:
   web:
-    image: vinhio/php8
+    image: vinhio/php8:arm64
+    platform: linux/arm64
     hostname: myapp-web
     container_name: myapp-web
     labels:
@@ -10,7 +11,7 @@ services:
       SERVICE_80_NAME: myapp-web
       SERVICE_443_NAME: myapp-web
     ports:
-     - '8080:80'
+      - '8080:80'
     depends_on:
       db:
         condition: service_healthy
@@ -22,11 +23,11 @@ services:
       APP_ENV: local
       PHP_IDE_CONFIG: serverName=myapp-web.service.docker
     volumes:
-    - ../:/home/www/app
+      - ../:/home/www/app
 
   db:
-    #image: mysql:5.7.35
-    image: mysql:8.0.25
+    image: arm64v8/mysql:8.0.31
+    platform: linux/arm64
     hostname: myapp-db
     container_name: myapp-db
     environment:
@@ -45,11 +46,11 @@ services:
       interval: 3s
       timeout: 3s
       retries: 10
-    #command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
     command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci --default-authentication-plugin=mysql_native_password
 
   mail:
-    image: mailhog/mailhog
+    image: jcalonso/mailhog
+    platform: linux/arm64
     hostname: myapp-mail
     container_name: myapp-mail
     labels:
@@ -58,8 +59,8 @@ services:
       - '8025:8025'
 
   redis:
-    #image: redis:4.0.14-alpine3.11
-    image: redis:6.2.5-alpine3.14
+    image: arm64v8/redis:6.2.5-alpine3.14
+    platform: linux/arm64
     hostname: myapp-redis
     container_name: myapp-redis
     labels:
