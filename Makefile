@@ -1,15 +1,15 @@
 VERSION ?= 'latest'
 
 build:
-	docker-compose -f docker/docker-compose.yml build --no-cache base
+	cd docker && \
+	docker buildx build -f Dockerfile.base -t php5-base:arm64 --no-cache --platform linux/arm64 . && \
+	cd ../
 
 run:
-	docker run -p 8080:80 php5-base
+	docker run --platform=linux/arm64 -p 8080:80 php5-base:arm64
 
 version:
-	#make version VERSION="latest"
-	docker tag php5-base:latest vinhio/php5:$(VERSION)
+	docker tag php5-base:arm64 vinhio/php5:arm64
 
 push:
-	#make push VERSION="latest"
-	docker push vinhio/php5:$(VERSION)
+	docker push vinhio/php5:arm64
