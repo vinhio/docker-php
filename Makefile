@@ -2,8 +2,8 @@ VERSION ?= 'latest'
 
 build:
 	cd docker && \
- 	docker buildx build -f Dockerfile.base -t php8-base:arm64 --no-cache --platform linux/arm64 . && \
- 	cd ../
+	docker buildx build -f Dockerfile.base -t php8-base:arm64 --no-cache --platform linux/arm64 . && \
+	cd ../
 
 run:
 	docker run --platform=linux/arm64 -p 8080:80 php8-base:arm64
