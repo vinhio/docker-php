@@ -2,19 +2,20 @@
 
 PHP8 Base provides a simple and completed PHP 8 environment for PHP code. Docker image built on top Alpine OS, Nginx, php8, MySQL 5/8, Redis 5
 
+    Version vinhio/php8:8.2.11 : Alpine 3.18, Nginx 1.24, PHP 8.2.11, MySQL 8.2.11, Redis 6.0.1, XDebug 3.2.2
     Version vinhio/php8:8.1.8 : Alpine 3.16, Nginx 1.22, PHP 8.1.8, MySQL 8.1.8, Redis 5.3.7, XDebug 3.1.5
     Version vinhio/php8:8.0.13 : Alpine 3.14.1, Nginx 1.20.2, PHP 8.0.13, MySQL 8.0.13, Redis 5.3.4, XDebug 3.0.4
 
-**Important:** If you want to build docker-php code base on Windows by yourself. Don't forget enable 
+**Important:** If you want to build docker-php code base on Windows by yourself. Don't forget enable
 `dos2unix` in file `docker/Dockerfile.base`
 
 #### PHP plugins:
 
-    php8, php8-intl, php8-openssl, php8-dba, php8-sqlite3, php8-pear, php8-phpdbg, php8-gmp, php8-pdo_mysql, php8-pcntl, php8-common, php8-xsl, 
-    php8-fpm, php8-mysqli, php8-enchant, php8-pspell, php8-snmp, php8-doc, php8-embed, php8-xmlreader, php8-pdo_sqlite, php8-exif, php8-opcache, 
-    php8-ldap, php8-posix, php8-gd, php8-gettext, php8-json, php8-xml, php8-iconv, php8-sysvshm, php8-curl, php8-shmop, php8-odbc, php8-phar, 
-    php8-pdo_pgsql, php8-imap, php8-pdo_dblib, php8-pgsql, php8-pdo_odbc, php8-pecl-xdebug, php8-zip, php8-cgi, php8-ctype, php8-bcmath, 
-    php8-calendar, php8-dom, php8-sockets, php8-soap, php8-sysvmsg, php8-zlib, php8-ftp, php8-sysvsem, php8-pdo, php8-bz2, php8-tokenizer, php8-xmlwriter, 
+    php8, php8-intl, php8-openssl, php8-dba, php8-sqlite3, php8-pear, php8-phpdbg, php8-gmp, php8-pdo_mysql, php8-pcntl, php8-common, php8-xsl,
+    php8-fpm, php8-mysqli, php8-enchant, php8-pspell, php8-snmp, php8-doc, php8-embed, php8-xmlreader, php8-pdo_sqlite, php8-exif, php8-opcache,
+    php8-ldap, php8-posix, php8-gd, php8-gettext, php8-json, php8-xml, php8-iconv, php8-sysvshm, php8-curl, php8-shmop, php8-odbc, php8-phar,
+    php8-pdo_pgsql, php8-imap, php8-pdo_dblib, php8-pgsql, php8-pdo_odbc, php8-pecl-xdebug, php8-zip, php8-cgi, php8-ctype, php8-bcmath,
+    php8-calendar, php8-dom, php8-sockets (Not in PHP 8.2.11), php8-soap, php8-sysvmsg, php8-zlib, php8-ftp, php8-sysvsem, php8-pdo, php8-bz2, php8-tokenizer, php8-xmlwriter,
     php8-fileinfo, php8-mbstring, php8-mysqlnd, php8-session, php8-tidy, php8-simplexml, php8-redis, php8-pecl-imagick, php8-pecl-mcrypt, php8-pecl-apcu
 
 ### I. Checking
@@ -41,14 +42,12 @@ Simple code project folder "/home/vinhio/app". So
         |_ /redis.php (Check Redis connection)
         |_ /ci/docker/docker-compose.yml
         |_ /ci/docker/Dockerfile.yml
-        |_ /Makefile 
-
+        |_ /Makefile
 
 File `index.php`
 
     <?php
     phpinfo();
-
 
 File `redis.php`
 
@@ -57,17 +56,16 @@ File `redis.php`
     $redis = new Redis();
     $redis->connect('myapp-redis', 6379);
     echo "Connect to server successful";
-    
+
     //check whether server is running or not
     echo "\nServer is running: ".$redis->ping();
-    
+
     //set the data in redis string
     $redis->set("tutorial-name", "Redis tutorial");
-    
+
     // Get the stored data and print it
     echo "\nStored string in redis:: " .$redis->get("tutorial-name");
     echo "\n";
-
 
 File `mysql.php`
 
@@ -76,17 +74,17 @@ File `mysql.php`
     $username = "user";
     $password = "secret";
     $dbname = "myapp";
-    
+
     // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);
-    
+
     // Check connection
     if ($conn->connect_error) {
     die("\nConnection failed: " . $conn->connect_error);
     }
     echo "\nConnected successfully";
     echo "\n";
-    
+
     // Close DB connection
     $conn->close();
 
@@ -96,7 +94,7 @@ File `ci/docker/docker-compose.yml`
 
     version: '2.1'
     services:
-    
+
       web:
         build:
           context: ""
@@ -125,9 +123,8 @@ File `ci/docker/docker-compose.yml`
           PHP_IDE_CONFIG: serverName=myapp-web.service.docker
         volumes:
         - ../../:/home/www/app
-    
+
       db:
-        #image: mysql:5.7.35
         image: mysql:8.0.25
         hostname: myapp-db
         container_name: myapp-db
@@ -147,9 +144,8 @@ File `ci/docker/docker-compose.yml`
           interval: 3s
           timeout: 3s
           retries: 10
-        #command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
         command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci --default-authentication-plugin=mysql_native_password
-    
+
       mail:
         image: mailhog/mailhog
         hostname: myapp-mail
@@ -158,9 +154,8 @@ File `ci/docker/docker-compose.yml`
             SERVICE_NAME: myapp-mail
         ports:
           - '8025:8025'
-    
+
       redis:
-        #image: redis:4.0.14-alpine3.11
         image: redis:6.2.5-alpine3.14
         hostname: myapp-redis
         container_name: myapp-redis
@@ -186,7 +181,6 @@ File `ci/docker/Dockerfile`
         adduser -S -u $hostUID -G nginx -h /home/www -s /sbin/nologin nginx &&\
         find /var -user $oldUID -exec chown -v $hostUID:$hostGID {} \;
 
-
 #### 3. Others
 
 File `Makefile` support run commands quickly
@@ -194,34 +188,34 @@ File `Makefile` support run commands quickly
     all: build run
 
     build:
-		docker-compose -f ci/docker/docker-compose.yml build --no-cache --build-arg hostUID=1000 --build-arg hostGID=1000 web
+    	docker-compose -f ci/docker/docker-compose.yml build --no-cache --build-arg hostUID=1000 --build-arg hostGID=1000 web
 
-	start: run
-	
-	run:
-		docker-compose -f ci/docker/docker-compose.yml -p myapp up -d web
-	
-	stop:
-		docker-compose -f ci/docker/docker-compose.yml -p myapp kill
-	
-	destroy:
-		docker-compose -f ci/docker/docker-compose.yml -p myapp down
-	
-	logs:
-		docker-compose -f ci/docker/docker-compose.yml -p myapp logs -f web
-	
-	shell:
-		docker-compose -f ci/docker/docker-compose.yml -p myapp exec --user nginx web bash
-	
-	root:
-		docker-compose -f ci/docker/docker-compose.yml -p myapp exec web bash
-	
-	ip:
-		docker inspect myapp-web | grep \"IPAddress\"
+    start: run
+
+    run:
+    	docker-compose -f ci/docker/docker-compose.yml -p myapp up -d web
+
+    stop:
+    	docker-compose -f ci/docker/docker-compose.yml -p myapp kill
+
+    destroy:
+    	docker-compose -f ci/docker/docker-compose.yml -p myapp down
+
+    logs:
+    	docker-compose -f ci/docker/docker-compose.yml -p myapp logs -f web
+
+    shell:
+    	docker-compose -f ci/docker/docker-compose.yml -p myapp exec --user nginx web bash
+
+    root:
+    	docker-compose -f ci/docker/docker-compose.yml -p myapp exec web bash
+
+    ip:
+    	docker inspect myapp-web | grep \"IPAddress\"
 
 #### 3. Start web container
 
-Start docker containers 
+Start docker containers
 
     cd /home/vinhio/app
     make run
