@@ -1,5 +1,7 @@
 #!/usr/bin/with-contenv bash
 
+echo "================ Update app permissions ================"
+
 echo "Make sure, that log file exists"
 #touch storage/logs/laravel.log
 
@@ -24,8 +26,3 @@ echo "Set executable bit for executable files"
 #chmod 775 artisan
 find -type f -name "*.sh" -exec chmod 775 {} \;
 
-echo "Nginx should be able to write uploaded files to temporary directory"
-chown root:nginx /tmp
-chmod 775 /tmp
-# For setting <DOCKER_DIR>/etc/php7/php-fpm.d/webapp.conf
-chmod 775 /var/log
