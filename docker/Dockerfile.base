@@ -1,5 +1,5 @@
-ARG PHP_VERSION="8.2.11"
-ARG ALPINE_VERSION="3.18"
+ARG PHP_VERSION="8.4.10"
+ARG ALPINE_VERSION="3.21"
 FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION}
 
 #ENV PHP_INI_DIR /usr/local/etc/php
@@ -78,7 +78,7 @@ RUN apk add --no-cache --virtual build-essentials \
     docker-php-ext-install sysvshm
 
 RUN pecl install -o -f redis && docker-php-ext-enable redis && \
-    pecl install xdebug-3.2.2 && docker-php-ext-enable xdebug
+    pecl install xdebug-3.4.5 && docker-php-ext-enable xdebug
 
 RUN apk del build-essentials && rm -rf /usr/src/php*
 
@@ -88,7 +88,14 @@ RUN apk del build-essentials && rm -rf /usr/src/php*
 #pdo_sqlite pgsql phar posix pspell readline reflection session shmop simplexml snmp soap sockets sodium spl standard
 #sysvmsg sysvsem sysvshm tidy tokenizer xml xmlreader xmlwriter xsl zend_test zip
 
+
 ### Install S6 overlay
+# TODO: The latest version doesn't work
+#RUN curl -LSs -o /tmp/s6-overlay-x86_64.tar.xz \
+#    https://github.com/just-containers/s6-overlay/releases/download/v3.2.1.0/s6-overlay-x86_64.tar.xz && \
+#    tar xJf /tmp/s6-overlay-x86_64.tar.xz -C / && \
+#    rm -f /tmp/s6-overlay-x86_64.tar.xz
+
 RUN curl -LSs -o /tmp/s6-overlay-amd64.tar.gz \
     https://github.com/just-containers/s6-overlay/releases/download/v2.2.0.3/s6-overlay-amd64.tar.gz && \
     tar xzf /tmp/s6-overlay-amd64.tar.gz -C / && \

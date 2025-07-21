@@ -2,6 +2,7 @@
 
 PHP8 Base provides a simple and completed PHP 8 environment for PHP code. Docker image built on top Alpine OS, Nginx, php8, MySQL 5/8, Redis 5
 
+    Version vinhio/php8:8.4.10 : Alpine 3.21, Nginx 1.26.3, PHP 8.4.10, MySQL 8.4.10, Redis 6.2.0, XDebug 3.4.5
     Version vinhio/php8:8.2.11 : Alpine 3.18, Nginx 1.24, PHP 8.2.11, MySQL 8.2.11, Redis 6.0.1, XDebug 3.2.2
     Version vinhio/php8:8.1.8 : Alpine 3.16, Nginx 1.22, PHP 8.1.8, MySQL 8.1.8, Redis 5.3.7, XDebug 3.1.5
     Version vinhio/php8:8.0.13 : Alpine 3.14.1, Nginx 1.20.2, PHP 8.0.13, MySQL 8.0.13, Redis 5.3.4, XDebug 3.0.4

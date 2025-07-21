@@ -1,9 +1,8 @@
-version: '2.1'
 services:
 
   web:
     build:
-      context: ""
+      context: .
       dockerfile: Dockerfile.local
       args:
         hostUID: 1000

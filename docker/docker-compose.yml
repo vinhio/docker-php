@@ -1,7 +1,6 @@
-version: "2.1"
 services:
   base:
     build:
-      context: ""
+      context: .
       dockerfile: Dockerfile.base
     image: php8-base

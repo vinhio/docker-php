@@ -1,9 +1,10 @@
 #
 # Another version of ../Makefile
 #
+# Note: Should move the file to root directory for testing
+#
 
 # Convert docker command to docker-compose command https://www.composerize.com/
-
 
 #TEST_ROOT = ../..
 #include ${TEST_ROOT}/include/common.makefile
